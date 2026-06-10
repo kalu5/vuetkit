@@ -1,3 +1,5 @@
-# Library Template
+# VueTkit
 
-This is library template for monorepo
+## Description
+
+Collection of business development tool kit for Vue3 projects.

@@ -3,8 +3,8 @@
 layout: home
 
 hero:
-  name: "library"
-  text: "Collection of library"
+  name: "VueTkit"
+  text: "Collection of business development tools for Vue3 projects"
   tagline: "Collect commonly used hooks, functions, and components in development."
   image: "/images/logo-large.png"
   actions:
@@ -22,10 +22,13 @@ hero:
       link: /components/index
 
 features:
-  - title: Hooks
-    details: Collect common hook
-  - title: Functions
-    details: Collect common function
-  - title: Components
-    details: Collect common component
+  - icon: 🚀
+    title: Hooks
+    details: Collect common hooks. e.g. useRequest, useAuth, etc.
+  - icon: 🛠️
+    title: Functions
+    details: Collect common functions. e.g. calculate, validate,etc.
+  - icon: 🎛
+    title: Components
+    details: Collect common components. e.g. KForm, KTable, etc.
 ---

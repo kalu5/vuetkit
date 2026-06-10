@@ -1,19 +1,20 @@
 {
-  "name": "@kalu55/shared",
+  "name": "@vuetkit/shared",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "packageManager": "pnpm@10.20.0",
-  "description": "Collection of essential shared utilities",
+  "description": "Collection of business development utilities for Vue3 projects",
   "author": "Kalu5",
   "license": "MIT",
   "keywords": [
-    "vue",
-    "utils"
+    "vue3",
+    "utilities"
   ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "files": [
+    "README.md",
     "dist"
   ],
   "scripts": {

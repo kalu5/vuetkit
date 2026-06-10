@@ -1,14 +1,14 @@
 {
-  "name": "@kalu55/monorepo",
+  "name": "@vuetkit/monorepo",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "packageManager": "pnpm@10.20.0",
-  "description": "Collection of essential library",
+  "description": "Collection of business development tools for Vue3 projects",
   "author": "Kalu5",
   "license": "MIT",
   "keywords": [
-    "vue",
-    "utils"
+    "vue3",
+    "tools"
   ],
   "scripts": {
     "build": "turbo run build",

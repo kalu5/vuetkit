@@ -30,14 +30,18 @@ const packagesSidebar = packages.map((pkg) => {
 function generateCategoryItems(pkg: string) {
   const categorys = fs.readdirSync(join(__dirname, `../${pkg}/src`))
   return categorys.map((category) => {
-    const categoryItems = fs.readdirSync(join(__dirname, `../${pkg}/src/${category}`))
+    const categoryItems = fs.readdirSync(
+      join(__dirname, `../${pkg}/src/${category}`),
+    )
     return {
       text: category,
       link: `/${pkg}/src/${category}`,
-      items: categoryItems.filter(child => !['index.md', 'index.ts'].includes(child)).map(child => ({
-        text: child,
-        link: `/${pkg}/src/${category}/${child}`,
-      })),
+      items: categoryItems
+        .filter(child => !['index.md', 'index.ts'].includes(child))
+        .map(child => ({
+          text: child,
+          link: `/${pkg}/src/${category}/${child}`,
+        })),
     }
   })
 }
@@ -65,27 +69,25 @@ const sidebarRoutes = packagesSidebar.reduce((acc: SidebarRoute, cur) => {
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: 'library-template',
+  title: 'VueTkit',
   lang: 'en',
-  base: '/library-template/',
-  head: [['link', { rel: 'icon', href: '/library-template/images/logo-small.png' }]],
-  description: 'utils library',
+  base: '/vuetkit/',
+  head: [['link', { rel: 'icon', href: '/vuetkit/images/logo-small.png' }]],
+  description: 'Collection of business development tools for Vue3 projects',
   themeConfig: {
-    logo: '/library-template/images/logo-small.png',
+    logo: '/images/logo-small.png',
     // https://vitepress.dev/reference/default-theme-config
-    nav: [{ text: 'library', link: '/' }],
+    nav: [],
 
     sidebar: {
       '/guide': defaultSidebar,
       ...sidebarRoutes,
     },
 
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/kalu5/library' },
-    ],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/kalu5/vuetkit' }],
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2026-PRESENT Kalu5 and library contributors',
+      copyright: 'Copyright © 2026-PRESENT Kalu5 and VueTkit contributors',
     },
   },
   rewrites: {

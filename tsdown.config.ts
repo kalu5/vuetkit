@@ -1,42 +1,41 @@
-import type { Format, UserConfig } from 'tsdown'
+import type { Format, UserConfig } from "tsdown";
 
-import type { PackageManifest } from './meta/packages'
-import { StaleGuardRecorder } from 'tsdown-stale-guard'
+import type { PackageManifest } from "./meta/packages";
+import { StaleGuardRecorder } from "tsdown-stale-guard";
 
-const externals = ['vue', /@kalu55\/.*/]
+const externals = ["vue", /@vuetkit\/.*/];
 
 export default function createTsDownConfig(pkg: PackageManifest) {
-  const { build, mjs, target = 'es2018', dts, external = [] } = pkg
+  const { build, mjs, target = "es2018", dts, external = [] } = pkg;
 
-  if (build === false)
-    return []
-  const format: Format[] = []
+  if (build === false) return [];
+  const format: Format[] = [];
 
   if (mjs !== false) {
-    format.push('es')
+    format.push("es");
   }
 
   const baseConfig: UserConfig = {
     target,
     dts,
-    platform: 'browser',
+    platform: "browser",
     deps: {
       neverBundle: [...externals, ...(external || [])],
     },
-  }
+  };
 
-  const configs: UserConfig[] = []
+  const configs: UserConfig[] = [];
 
-  const functionNames = ['index']
+  const functionNames = ["index"];
 
-  const entry = {}
+  const entry = {};
 
   functionNames.forEach((name) => {
     const entryObj = {
-      [name]: name === 'index' ? 'index.ts' : `${name}.ts`,
-    }
-    Object.assign(entry, entryObj)
-  })
+      [name]: name === "index" ? "index.ts" : `${name}.ts`,
+    };
+    Object.assign(entry, entryObj);
+  });
 
   configs.push({
     ...baseConfig,
@@ -44,11 +43,11 @@ export default function createTsDownConfig(pkg: PackageManifest) {
     format,
     plugins: [StaleGuardRecorder()],
     attw: {
-      level: 'error',
-      profile: 'esm-only',
-      ignoreRules: ['cjs-resolves-to-esm'],
+      level: "error",
+      profile: "esm-only",
+      ignoreRules: ["cjs-resolves-to-esm"],
     },
-  })
+  });
 
-  return configs
+  return configs;
 }
