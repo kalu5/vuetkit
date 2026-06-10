@@ -1,0 +1,15 @@
+.vscode
+.trae
+.DS_Store
+.turbo
+.idea
+
+dist
+cache
+.eslintcache
+
+node_modules
+coverage
+skills
+
+

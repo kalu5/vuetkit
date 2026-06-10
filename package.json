@@ -1,0 +1,49 @@
+{
+  "name": "@kalu55/monorepo",
+  "type": "module",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.20.0",
+  "description": "Collection of essential library",
+  "author": "Kalu5",
+  "license": "MIT",
+  "keywords": [
+    "vue",
+    "utils"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "test": "vitest",
+    "test:cov": "vitest run --coverage",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "docs:dev": "vitepress dev packages",
+    "docs:build": "vitepress build packages",
+    "docs:preview": "vitepress preview packages",
+    "publish-packages": "turbo run build && changeset version && changeset publish"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "catalog:dev",
+    "@arethetypeswrong/core": "catalog:test",
+    "@changesets/cli": "catalog:publish",
+    "@types/node": "catalog:types",
+    "@vitest/coverage-v8": "catalog:test",
+    "changeset": "catalog:publish",
+    "eslint": "catalog:dev",
+    "eslint-plugin-format": "catalog:dev",
+    "lint-staged": "catalog:dev",
+    "simple-git-hooks": "catalog:dev",
+    "tsdown": "catalog:dev",
+    "tsdown-stale-guard": "catalog:dev",
+    "tsx": "catalog:dev",
+    "turbo": "catalog:dev",
+    "typescript": "catalog:dev",
+    "vitepress": "catalog:docs",
+    "vitest": "catalog:test"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm lint-staged"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@kalu55/components",
+  "type": "module",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.20.0",
+  "description": "Collection of essential vue components",
+  "author": "Kalu5",
+  "license": "MIT",
+  "keywords": [
+    "vue",
+    "components"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown --config-loader tsx"
+  }
+}

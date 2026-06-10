@@ -1,0 +1,22 @@
+{
+  "name": "@kalu55/shared",
+  "type": "module",
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.20.0",
+  "description": "Collection of essential shared utilities",
+  "author": "Kalu5",
+  "license": "MIT",
+  "keywords": [
+    "vue",
+    "utils"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown --config-loader tsx"
+  }
+}

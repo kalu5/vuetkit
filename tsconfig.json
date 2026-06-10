@@ -1,0 +1,47 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "jsx": "preserve",
+    "lib": ["ESNext", "DOM", "DOM.Iterable", "webworker"],
+    "rootDir": ".",
+    "module": "esnext",
+    "moduleResolution": "Bundler",
+    "paths": {
+      "@kalu55/core": ["./packages/core/index.ts"],
+      "@kalu55/core/*": ["./packages/core/*"],
+      "@kalu55/shared": ["./packages/shared/index.ts"],
+      "@kalu55/shared/*": ["./packages/shared/*"],
+      "@kalu55/components": ["./packages/components/index.ts"],
+      "@kalu55/components/*": ["./packages/components/*"]
+    },
+    "resolveJsonModule": true,
+    "types": ["vitest"],
+    "allowImportingTsExtensions": true,
+    "strict": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "noUnusedLocals": true,
+    "declaration": true,
+    "declarationDir": "./types",
+    "emitDeclarationOnly": true,
+    "esModuleInterop": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
+  },
+  "include": [
+    "*.ts",
+    "packages",
+    "packages/.vitepress/components/*.vue",
+    "packages/.vitepress/*.ts",
+    "meta",
+    "vitest.config.ts"
+  ],
+  "exclude": [
+    "unocss.config.ts",
+    "node_modules",
+    "**/*.md",
+    "**/dist",
+    "packages/.test",
+    "packages/_docs"
+  ]
+}
