@@ -1,3 +1,3 @@
-export default function useRequest() {
+export function useRequest() {
   return 'useRequest'
 }
