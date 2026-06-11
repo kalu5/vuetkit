@@ -1,1 +1,1 @@
-export * from './src/computed/index'
+export * from './src/dataType/index'

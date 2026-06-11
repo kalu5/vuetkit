@@ -1,0 +1,5 @@
+export * from './getDataType'
+export * from './isArr'
+export * from './isFunc'
+export * from './isObj'
+export * from './realObj'
