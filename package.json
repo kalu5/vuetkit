@@ -27,9 +27,11 @@
     "@changesets/cli": "catalog:publish",
     "@types/node": "catalog:types",
     "@vitest/coverage-v8": "catalog:test",
+    "@vue/test-utils": "catalog:test",
     "changeset": "catalog:publish",
     "eslint": "catalog:dev",
     "eslint-plugin-format": "catalog:dev",
+    "jsdom": "catalog:test",
     "lint-staged": "catalog:dev",
     "simple-git-hooks": "catalog:dev",
     "tsdown": "catalog:dev",
@@ -38,7 +40,8 @@
     "turbo": "catalog:dev",
     "typescript": "catalog:dev",
     "vitepress": "catalog:docs",
-    "vitest": "catalog:test"
+    "vitest": "catalog:test",
+    "vue": "catalog:dev"
   },
   "simple-git-hooks": {
     "pre-commit": "pnpm lint-staged"
