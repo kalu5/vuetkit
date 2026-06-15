@@ -40,10 +40,6 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Send a Slack notification if a publish happens
-        if: steps.changesets.outputs.published == 'true'
-        run: my-slack-bot send-notification --message "A new version of ${GITHUB_REPOSITORY} was published!"
-
   deploy-docs:
     name: Deploy Documentation
     needs: install
