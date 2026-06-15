@@ -22,5 +22,8 @@
   },
   "peerDependencies": {
     "vue": "catalog:dev"
+  },
+  "dependencies": {
+    "@vuetkit/shared": "workspace:*"
   }
 }

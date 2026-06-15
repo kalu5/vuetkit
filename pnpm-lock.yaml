@@ -140,6 +140,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@vuetkit/shared':
+        specifier: workspace:*
+        version: link:../shared
       vue:
         specifier: catalog:dev
         version: 3.5.35(typescript@6.0.3)
