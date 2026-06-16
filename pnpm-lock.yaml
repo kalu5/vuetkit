@@ -142,7 +142,14 @@ importers:
         specifier: catalog:dev
         version: 3.5.35(typescript@6.0.3)
 
-  packages/components: {}
+  packages/components:
+    dependencies:
+      element-plus:
+        specifier: catalog:dev
+        version: 2.14.2(vue@3.5.35(typescript@6.0.3))
+      vue:
+        specifier: catalog:dev
+        version: 3.5.35(typescript@6.0.3)
 
   packages/core:
     dependencies:
