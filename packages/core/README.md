@@ -9,3 +9,7 @@ Collection of business development hooks for Vue3 projects.
 ### Network
 
 - [useRequest](/core/src/network/useRequest/)
+
+### File
+
+- [useAsyncDownloadFile](/core/src/file/useAsyncDownloadFile/)
