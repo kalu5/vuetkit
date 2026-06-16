@@ -29,6 +29,7 @@
     "@vitest/coverage-v8": "catalog:test",
     "@vue/test-utils": "catalog:test",
     "changeset": "catalog:publish",
+    "element-plus": "catalog:dev",
     "eslint": "catalog:dev",
     "eslint-plugin-format": "catalog:dev",
     "jsdom": "catalog:test",

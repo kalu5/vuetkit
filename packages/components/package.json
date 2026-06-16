@@ -19,5 +19,9 @@
   ],
   "scripts": {
     "build": "tsdown --config-loader tsx"
+  },
+  "peerDependencies": {
+    "element-plus": "catalog:dev",
+    "vue": "catalog:dev"
   }
 }
