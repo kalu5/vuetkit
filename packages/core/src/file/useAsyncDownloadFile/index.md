@@ -18,9 +18,9 @@ Support download by search criteria or by selecting multiple columns.
 
 | Return                | Type                        | Description                 |
 | --------------------- | --------------------------- | --------------------------- |
-| loading               | Ref<boolean>                | Download loading status.    |
+| loading               | Ref\<boolean\>              | Download loading status.    |
 | executeDownload       | (params: any) => void       | Execute download operation. |
-| downloadColumns       | Ref<number[]>               | Download columns.           |
+| downloadColumns       | Ref\<number[]\>             | Download columns.           |
 | changeDownloadColumns | (columns: number[]) => void | Change download columns.    |
 
 ## Basic Usage
