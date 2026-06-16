@@ -8,4 +8,4 @@ Collection of business development components for Vue3 + ElementPlus projects.
 
 ### Feedback
 
-- [useMessage](/components/src/feedback/message/)
+- [useMessage](/components/src/feedback/useMessage/)

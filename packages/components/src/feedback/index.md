@@ -2,4 +2,4 @@
 
 - Message prompt hook
 
-[useMessage](/components/src/feedback/message/)
+[useMessage](/components/src/feedback/useMessage/)
