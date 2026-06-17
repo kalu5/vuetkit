@@ -1,1 +1,1 @@
-export * from './src/feedback/useMessage'
+export * from './src/feedback/index'
