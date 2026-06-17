@@ -55,8 +55,10 @@ describe('useAsyncConfirm', () => {
   it('returns loading ref and confirm function', async () => {
     const { useRequest } = await import('@vuetkit/core')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
+    const errorRef = { value: undefined as unknown }
+    const loadingRef = { value: false }
     const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    useRequestMock.mockReturnValue({ loading: loadingRef, error: errorRef, execute: executeMock })
 
     const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
     expect(res.loading).toBeDefined()
@@ -69,7 +71,7 @@ describe('useAsyncConfirm', () => {
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
     const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: { value: undefined }, execute: executeMock })
     elMessageBoxMock.mockImplementation((_m: string, _t: string, _o: any) => ({ catch: () => {} }))
 
     const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
@@ -89,7 +91,7 @@ describe('useAsyncConfirm', () => {
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
     const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: { value: undefined }, execute: executeMock })
     elMessageBoxMock.mockImplementation((_m: string, _t: string, _o: any) => ({ catch: () => {} }))
 
     const { result: res } = runInComponent(() =>
@@ -115,8 +117,20 @@ describe('useAsyncConfirm', () => {
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
-    const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockResolvedValue('ok')
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (err) {
+        errorRef.value = err
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -124,7 +138,7 @@ describe('useAsyncConfirm', () => {
       return { catch: () => {} }
     })
 
-    const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
+    const { result: res } = runInComponent(() => useAsyncConfirm(serviceMock, {}))
     res.confirm({ id: 42 })
 
     const instance: MessageBoxInstance = { confirmButtonLoading: false }
@@ -133,7 +147,7 @@ describe('useAsyncConfirm', () => {
       doneCalled = true
     })
 
-    expect(executeMock).toHaveBeenCalledWith({ id: 42 })
+    expect(wrappedExecute).toHaveBeenCalledWith({ id: 42 })
     expect(doneCalled).toBe(true)
   })
 
@@ -142,8 +156,20 @@ describe('useAsyncConfirm', () => {
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
-    const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockResolvedValue('ok')
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (err) {
+        errorRef.value = err
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -151,13 +177,13 @@ describe('useAsyncConfirm', () => {
       return { catch: () => {} }
     })
 
-    const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
+    const { result: res } = runInComponent(() => useAsyncConfirm(serviceMock, {}))
     res.confirm()
 
     const instance: MessageBoxInstance = { confirmButtonLoading: false }
     await beforeCloseFn('confirm', instance, () => {})
 
-    expect(executeMock).toHaveBeenCalledWith(undefined)
+    expect(wrappedExecute).toHaveBeenCalledWith(undefined)
   })
 
   it('sets confirmButtonLoading to true during async request and false after', async () => {
@@ -167,10 +193,22 @@ describe('useAsyncConfirm', () => {
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
 
     let resolveFn: (v: string) => void = () => {}
-    const executeMock = vi.fn().mockImplementation(
+    const serviceMock = vi.fn().mockImplementation(
       () => new Promise<string>((r) => { resolveFn = r }),
     )
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (err) {
+        errorRef.value = err
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -178,7 +216,7 @@ describe('useAsyncConfirm', () => {
       return { catch: () => {} }
     })
 
-    const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
+    const { result: res } = runInComponent(() => useAsyncConfirm(serviceMock, {}))
     res.confirm()
 
     const instance: MessageBoxInstance = { confirmButtonLoading: false }
@@ -207,8 +245,20 @@ describe('useAsyncConfirm', () => {
     const errorMsgMock = vi.fn()
     useMessageMock.mockReturnValue({ success: successMock, error: errorMsgMock })
 
-    const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockResolvedValue('ok')
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (err) {
+        errorRef.value = err
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -218,7 +268,7 @@ describe('useAsyncConfirm', () => {
 
     const confirmSuccess = vi.fn()
     const { result: res } = runInComponent(() =>
-      useAsyncConfirm(executeMock, {
+      useAsyncConfirm(serviceMock, {
         successMessage: 'Deleted successfully',
         confirmSuccess,
       }),
@@ -245,8 +295,20 @@ describe('useAsyncConfirm', () => {
     const errorMsgMock = vi.fn()
     useMessageMock.mockReturnValue({ success: successMock, error: errorMsgMock })
 
-    const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockResolvedValue('ok')
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (err) {
+        errorRef.value = err
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -254,7 +316,7 @@ describe('useAsyncConfirm', () => {
       return { catch: () => {} }
     })
 
-    const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
+    const { result: res } = runInComponent(() => useAsyncConfirm(serviceMock, {}))
     res.confirm()
 
     const instance: MessageBoxInstance = { confirmButtonLoading: false }
@@ -264,7 +326,7 @@ describe('useAsyncConfirm', () => {
     expect(errorMsgMock).not.toHaveBeenCalled()
   })
 
-  it('shows default error message and calls confirmError when confirm service fails', async () => {
+  it('calls confirmError callback with error object when service fails', async () => {
     const { useRequest } = await import('@vuetkit/core')
     const { ElMessageBox } = await import('element-plus')
     const { useMessage } = await import('../useMessage')
@@ -277,8 +339,20 @@ describe('useAsyncConfirm', () => {
     useMessageMock.mockReturnValue({ success: successMock, error: errorMsgMock })
 
     const err = new Error('service error')
-    const executeMock = vi.fn().mockRejectedValue(err)
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockRejectedValue(err)
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (e) {
+        errorRef.value = e
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -288,7 +362,7 @@ describe('useAsyncConfirm', () => {
 
     const confirmError = vi.fn()
     const { result: res } = runInComponent(() =>
-      useAsyncConfirm(executeMock, {
+      useAsyncConfirm(serviceMock, {
         confirmError,
       }),
     )
@@ -314,8 +388,20 @@ describe('useAsyncConfirm', () => {
     const errorMsgMock = vi.fn()
     useMessageMock.mockReturnValue({ success: successMock, error: errorMsgMock })
 
-    const executeMock = vi.fn().mockRejectedValue(new Error('fail'))
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockRejectedValue(new Error('fail'))
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (e) {
+        errorRef.value = e
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -324,7 +410,7 @@ describe('useAsyncConfirm', () => {
     })
 
     const { result: res } = runInComponent(() =>
-      useAsyncConfirm(executeMock, {
+      useAsyncConfirm(serviceMock, {
         errorMessage: 'Delete failed, please try again',
       }),
     )
@@ -343,8 +429,20 @@ describe('useAsyncConfirm', () => {
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
 
-    const executeMock = vi.fn().mockRejectedValue(new Error('fail'))
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockRejectedValue(new Error('fail'))
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (e) {
+        errorRef.value = e
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -352,7 +450,7 @@ describe('useAsyncConfirm', () => {
       return { catch: () => {} }
     })
 
-    const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
+    const { result: res } = runInComponent(() => useAsyncConfirm(serviceMock, {}))
     res.confirm()
 
     const instance: MessageBoxInstance = { confirmButtonLoading: false }
@@ -371,8 +469,20 @@ describe('useAsyncConfirm', () => {
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
 
-    const executeMock = vi.fn().mockRejectedValue(new Error('fail'))
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockRejectedValue(new Error('fail'))
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (e) {
+        errorRef.value = e
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -382,7 +492,7 @@ describe('useAsyncConfirm', () => {
 
     const confirmSuccess = vi.fn()
     const { result: res } = runInComponent(() =>
-      useAsyncConfirm(executeMock, { confirmSuccess }),
+      useAsyncConfirm(serviceMock, { confirmSuccess }),
     )
     res.confirm()
 
@@ -398,8 +508,20 @@ describe('useAsyncConfirm', () => {
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
 
-    const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockResolvedValue('ok')
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (e) {
+        errorRef.value = e
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -409,7 +531,7 @@ describe('useAsyncConfirm', () => {
 
     const confirmError = vi.fn()
     const { result: res } = runInComponent(() =>
-      useAsyncConfirm(executeMock, { confirmError }),
+      useAsyncConfirm(serviceMock, { confirmError }),
     )
     res.confirm()
 
@@ -425,8 +547,20 @@ describe('useAsyncConfirm', () => {
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
 
-    const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockResolvedValue('ok')
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (e) {
+        errorRef.value = e
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -434,7 +568,7 @@ describe('useAsyncConfirm', () => {
       return { catch: () => {} }
     })
 
-    const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
+    const { result: res } = runInComponent(() => useAsyncConfirm(serviceMock, {}))
     res.confirm()
 
     const instance: MessageBoxInstance = { confirmButtonLoading: false }
@@ -444,7 +578,7 @@ describe('useAsyncConfirm', () => {
     })
 
     expect(doneCalled).toBe(true)
-    expect(executeMock).not.toHaveBeenCalled()
+    expect(wrappedExecute).not.toHaveBeenCalled()
   })
 
   it('does not show success or error messages on cancel', async () => {
@@ -459,8 +593,20 @@ describe('useAsyncConfirm', () => {
     const errorMsgMock = vi.fn()
     useMessageMock.mockReturnValue({ success: successMock, error: errorMsgMock })
 
-    const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockResolvedValue('ok')
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (e) {
+        errorRef.value = e
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -471,7 +617,7 @@ describe('useAsyncConfirm', () => {
     const confirmSuccess = vi.fn()
     const confirmError = vi.fn()
     const { result: res } = runInComponent(() =>
-      useAsyncConfirm(executeMock, {
+      useAsyncConfirm(serviceMock, {
         successMessage: 'ok',
         errorMessage: 'bad',
         confirmSuccess,
@@ -493,11 +639,11 @@ describe('useAsyncConfirm', () => {
     const { useRequest } = await import('@vuetkit/core')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
 
-    const executeMock = vi.fn().mockResolvedValue('ok')
+    const serviceMock = vi.fn().mockResolvedValue('ok')
     const loadingRef = { value: true }
-    useRequestMock.mockReturnValue({ loading: loadingRef, execute: executeMock })
+    useRequestMock.mockReturnValue({ loading: loadingRef, error: { value: undefined }, execute: serviceMock })
 
-    const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
+    const { result: res } = runInComponent(() => useAsyncConfirm(serviceMock, {}))
     expect(res.loading).toBe(loadingRef)
     expect(res.loading.value).toBe(true)
   })
@@ -508,8 +654,20 @@ describe('useAsyncConfirm', () => {
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
 
-    const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockResolvedValue('ok')
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (e) {
+        errorRef.value = e
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -517,24 +675,24 @@ describe('useAsyncConfirm', () => {
       return { catch: () => {} }
     })
 
-    const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, undefined as any))
+    const { result: res } = runInComponent(() => useAsyncConfirm(serviceMock, undefined as any))
     res.confirm()
 
     const instance: MessageBoxInstance = { confirmButtonLoading: false }
     await beforeCloseFn('confirm', instance, () => {})
 
-    expect(executeMock).toHaveBeenCalledTimes(1)
+    expect(wrappedExecute).toHaveBeenCalledTimes(1)
   })
 
   it('passes manual: true to useRequest', async () => {
     const { useRequest } = await import('@vuetkit/core')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
 
-    const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockResolvedValue('ok')
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: { value: undefined }, execute: serviceMock })
 
-    runInComponent(() => useAsyncConfirm(executeMock, {}))
-    expect(useRequestMock).toHaveBeenCalledWith(executeMock, { manual: true })
+    runInComponent(() => useAsyncConfirm(serviceMock, {}))
+    expect(useRequestMock).toHaveBeenCalledWith(serviceMock, { manual: true })
   })
 
   it('can be called multiple times', async () => {
@@ -543,8 +701,20 @@ describe('useAsyncConfirm', () => {
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
 
-    const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockResolvedValue('ok')
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (e) {
+        errorRef.value = e
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -552,7 +722,7 @@ describe('useAsyncConfirm', () => {
       return { catch: () => {} }
     })
 
-    const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
+    const { result: res } = runInComponent(() => useAsyncConfirm(serviceMock, {}))
 
     res.confirm({ id: 1 })
     const instance1: MessageBoxInstance = { confirmButtonLoading: false }
@@ -562,9 +732,9 @@ describe('useAsyncConfirm', () => {
     const instance2: MessageBoxInstance = { confirmButtonLoading: false }
     await beforeCloseFn('confirm', instance2, () => {})
 
-    expect(executeMock).toHaveBeenCalledTimes(2)
-    expect(executeMock).toHaveBeenNthCalledWith(1, { id: 1 })
-    expect(executeMock).toHaveBeenNthCalledWith(2, { id: 2 })
+    expect(wrappedExecute).toHaveBeenCalledTimes(2)
+    expect(wrappedExecute).toHaveBeenNthCalledWith(1, { id: 1 })
+    expect(wrappedExecute).toHaveBeenNthCalledWith(2, { id: 2 })
   })
 
   it('does not throw when confirmError callback is not provided and service fails', async () => {
@@ -573,8 +743,20 @@ describe('useAsyncConfirm', () => {
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
 
-    const executeMock = vi.fn().mockRejectedValue(new Error('fail'))
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockRejectedValue(new Error('fail'))
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (e) {
+        errorRef.value = e
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -582,7 +764,7 @@ describe('useAsyncConfirm', () => {
       return { catch: () => {} }
     })
 
-    const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
+    const { result: res } = runInComponent(() => useAsyncConfirm(serviceMock, {}))
     res.confirm()
 
     const instance: MessageBoxInstance = { confirmButtonLoading: false }
@@ -595,8 +777,20 @@ describe('useAsyncConfirm', () => {
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
 
-    const executeMock = vi.fn().mockResolvedValue('ok')
-    useRequestMock.mockReturnValue({ loading: { value: false }, execute: executeMock })
+    const serviceMock = vi.fn().mockResolvedValue('ok')
+    const errorRef = { value: undefined as unknown }
+    const wrappedExecute = vi.fn(async (params?: unknown) => {
+      try {
+        const res = await serviceMock(params)
+        errorRef.value = null
+        return res
+      }
+      catch (e) {
+        errorRef.value = e
+        return undefined
+      }
+    })
+    useRequestMock.mockReturnValue({ loading: { value: false }, error: errorRef, execute: wrappedExecute })
 
     let beforeCloseFn: any = null
     elMessageBoxMock.mockImplementation((_m: string, _t: string, opts: any) => {
@@ -604,7 +798,7 @@ describe('useAsyncConfirm', () => {
       return { catch: () => {} }
     })
 
-    const { result: res } = runInComponent(() => useAsyncConfirm(executeMock, {}))
+    const { result: res } = runInComponent(() => useAsyncConfirm(serviceMock, {}))
     res.confirm()
 
     const instance: MessageBoxInstance = { confirmButtonLoading: false }

@@ -35,7 +35,7 @@ export function useAsyncConfirm(
     errorMessage,
   } = options || {}
 
-  const { loading, execute: executeConfirm } = useRequest(confirmService, {
+  const { loading, execute: executeConfirm, error } = useRequest(confirmService, {
     manual: true,
   })
 
@@ -48,25 +48,22 @@ export function useAsyncConfirm(
       type: type as MessageType,
       beforeClose: async (action, instance, done) => {
         if (action === 'confirm') {
-          try {
-            instance.confirmButtonLoading = true
-            await executeConfirm(params)
-            done()
+          instance.confirmButtonLoading = true
+          await executeConfirm(params)
+          instance.confirmButtonLoading = false
+          if (error.value) {
+            if (errorMessage) {
+              showError(errorMessage)
+            }
+            confirmError?.(error.value)
+          }
+          else {
             if (successMessage) {
               success(successMessage)
             }
             confirmSuccess?.()
           }
-          catch (err) {
-            if (errorMessage) {
-              showError(errorMessage)
-            }
-            confirmError?.(err)
-            done()
-          }
-          finally {
-            instance.confirmButtonLoading = false
-          }
+          done()
         }
         else {
           done()
