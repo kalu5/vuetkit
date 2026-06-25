@@ -23,5 +23,8 @@
   "peerDependencies": {
     "element-plus": "catalog:dev",
     "vue": "catalog:dev"
+  },
+  "dependencies": {
+    "@vuetkit/shared": "workspace:*"
   }
 }
