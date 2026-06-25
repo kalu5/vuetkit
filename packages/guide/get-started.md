@@ -1,6 +1,6 @@
 # Get Started
 
-VueTkit is a collection of business development tools for Vue3 projects. Includes Hooks, Utils, Components.
+VueTkit is a collect commonly used Composable Utilities, Shared Utilities, and Composable Components in development.
 
 ## Installation
 
@@ -18,7 +18,7 @@ pnpm add @vuetkit/core
 
 ## Usage Example
 
-Simply import the hook you need from `@vuetkit/core`.
+Simply import the function you need from `@vuetkit/core`.
 
 ```vue
 <script setup lang="ts">

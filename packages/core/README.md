@@ -1,10 +1,10 @@
-# Hooks
+# Composables
 
 ## Description
 
-Collection of business development hooks for Vue3 projects.
+Collection of business development Composable Utilities for Vue3 projects.
 
-## Hooks List
+## Composable Utilities List
 
 ### Network
 

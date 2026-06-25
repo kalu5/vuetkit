@@ -1,9 +1,9 @@
-# Feedback Component / Component Hooks
+# Feedback
 
-- Message prompt hook
+- Unified message prompt
 
 [useMessage](/components/src/feedback/useMessage/)
 
-- Async confirm hook
+- Unified async confirm
 
 [useAsyncConfirm](/components/src/feedback/useAsyncConfirm/)

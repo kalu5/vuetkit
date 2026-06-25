@@ -22,17 +22,17 @@ export interface PackageManifest {
 export const packages: PackageManifest[] = [
   {
     name: 'core',
-    display: 'Hooks',
+    display: 'Composable Utilities',
     description: 'Collection of essential Vue Utilities',
   },
   {
     name: 'shared',
-    display: 'Utils',
+    display: 'Shared Utilities',
   },
 
   {
     name: 'components',
-    display: 'Components',
-    description: 'Collection of Vue Components',
+    display: 'Composable Components',
+    description: 'Collection of Vue Composable Components',
   },
 ]

@@ -1,10 +1,10 @@
-# Components
+# Composable Components
 
 ## Description
 
-Collection of business development components for Vue3 + ElementPlus projects.
+Collection of business development Composable Components for Vue3 + ElementPlus projects.
 
-## All Components / Component Hooks
+## All Composable Components
 
 ### Feedback
 

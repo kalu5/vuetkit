@@ -3,7 +3,7 @@
   <img src="https://raw.githubusercontent.com/kalu5/vuetkit/main/packages/public/images/logo-large.png" alt="VueTkit - Collection of business development tools for Vue3 projects" width="300">
 </a>
 <br>
-Collection of business development tools for Vue3 projects. Includes Hooks, Utils, Components.
+Collect commonly used Composable Utilities, Shared Utilities, and Composable Components in development.
 </p>
 
 <p align="center">

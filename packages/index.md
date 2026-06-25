@@ -5,30 +5,30 @@ layout: home
 hero:
   name: "VueTkit"
   text: "Collection of business development tools for Vue3 projects"
-  tagline: "Collect commonly used hooks, functions, and components in development."
+  tagline: "Collect commonly used Composable Utilities, Shared Utilities, and Composable Components in development."
   image: "/images/logo-large.png"
   actions:
     - theme: brand
       text: Get Started
       link: /guide/get-started
     - theme: alt
-      text: Hooks
+      text: useUtils
       link: /core/index
     - theme: alt
-      text: Functions
+      text: sharedUtils
       link: /shared/index
     - theme: alt
-      text: Components
+      text: useComponents
       link: /components/index
 
 features:
   - icon: 🚀
-    title: Hooks
-    details: Collect common hooks. e.g. useRequest, useAuth, etc.
+    title: Composable Utilities
+    details: Collect common Composable Utilities. e.g. useRequest, useAsyncDownloadFile, etc.
   - icon: 🛠️
-    title: Functions
-    details: Collect common functions. e.g. calculate, validate,etc.
+    title: Shared Utilities
+    details: Collect common Shared Utilities. e.g. downloadFile, getDataType,etc.
   - icon: 🎛
-    title: Components
-    details: Collect common components. e.g. KForm, KTable, etc.
+    title: Composable Components
+    details: Collect common Composable Components. e.g. useForm, useAsyncConfirm, etc.
 ---

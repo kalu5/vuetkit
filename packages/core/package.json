@@ -3,12 +3,12 @@
   "type": "module",
   "version": "0.0.8",
   "packageManager": "pnpm@10.20.0",
-  "description": "Collection of business development hooks for Vue3 projects",
+  "description": "Collection of business development Composables for Vue3 projects",
   "author": "Kalu5",
   "license": "MIT",
   "keywords": [
     "vue3",
-    "hooks"
+    "Composables"
   ],
   "main": "dist/index.js",
   "module": "dist/index.js",

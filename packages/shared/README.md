@@ -2,9 +2,9 @@
 
 ## Description
 
-Collection of business development utilities for Vue3 projects.
+Collection of business development Shared Utilities for Vue3 projects.
 
-## All Functions
+## All Shared Utilities
 
 ### Data Type
 
