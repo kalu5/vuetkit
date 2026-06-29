@@ -25,6 +25,7 @@
     "vue": "catalog:dev"
   },
   "dependencies": {
+    "@vuetkit/core": "workspace:*",
     "@vuetkit/shared": "workspace:*"
   }
 }

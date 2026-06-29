@@ -1,8 +1,10 @@
 import { mount } from '@vue/test-utils'
 
+import { useRequest } from '@vuetkit/core'
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { defineComponent, h } from 'vue'
+import { defineComponent, h, ref } from 'vue'
+
 import { useTable } from './index'
 
 vi.mock('element-plus', () => ({
@@ -32,10 +34,24 @@ vi.mock('element-plus', () => ({
       }, slots.default?.({ row: { id: 1, name: 'Test', age: 20, address: { city: '', street: '' } } }))
     },
   }),
+  vLoading: {
+    mounted: vi.fn(),
+    unmounted: vi.fn(),
+  },
 }))
 
 vi.mock('@vuetkit/shared', () => ({
   isFunc: vi.fn((val: unknown) => typeof val === 'function'),
+}))
+
+vi.mock('@vuetkit/core', () => ({
+  useRequest: vi.fn(() => ({
+    data: ref([]),
+    loading: ref(false),
+    error: ref(undefined),
+    execute: vi.fn(),
+    cancel: vi.fn(),
+  })),
 }))
 
 beforeEach(() => {
@@ -353,6 +369,163 @@ describe('useTable', () => {
         undefined as unknown as any,
         { prop: 'name', label: 'Name' },
       ],
+    })
+    expect(() => mount(TableComp)).not.toThrow()
+  })
+
+  it('calls execute onMounted when service is provided', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+    })
+    await mount(TableComp)
+    expect(mockExecute).toHaveBeenCalledTimes(1)
+  })
+
+  it('does not call execute onMounted when service is not provided', async () => {
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+    })
+    await mount(TableComp)
+    expect(mockExecute).not.toHaveBeenCalled()
+  })
+
+  it('passes formatData to useRequest', async () => {
+    const mockFormatData = vi.fn((res: unknown) => res as User[])
+    const mockService = vi.fn(() => Promise.resolve([]))
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      formatData: mockFormatData,
+    })
+    await mount(TableComp)
+    expect(useRequest).toHaveBeenCalledWith(mockService, expect.objectContaining({
+      formatData: mockFormatData,
+    }))
+  })
+
+  it('uses asyncRequestData when service returns data', async () => {
+    const mockService = vi.fn(() => Promise.resolve([{ id: 1, name: 'Async', age: 30, address: { city: '', street: '' } }]))
+    const mockData = ref([{ id: 1, name: 'Async', age: 30, address: { city: '', street: '' } }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: mockData,
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [
+        { prop: 'name', label: 'Name' },
+      ],
+      service: mockService,
+    })
+    const wrapper = await mount(TableComp)
+    const table = wrapper.find('table')
+    expect(table.attributes('data-data')).toBe('[{"id":1,"name":"Async","age":30,"address":{"city":"","street":""}}]')
+  })
+
+  it('uses static data when service is not provided', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(undefined),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const staticData = [{ id: 2, name: 'Static', age: 40, address: { city: '', street: '' } }]
+    const [TableComp] = useTable<User>({
+      columns: [
+        { prop: 'name', label: 'Name' },
+      ],
+      data: staticData,
+    })
+    const wrapper = await mount(TableComp)
+    const table = wrapper.find('table')
+    expect(table.attributes('data-data')).toBe('[{"id":2,"name":"Static","age":40,"address":{"city":"","street":""}}]')
+  })
+
+  it('calls execute when params change', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const paramsRef = ref({ page: 1 })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      params: paramsRef,
+    })
+    const wrapper = await mount(TableComp)
+    mockExecute.mockClear()
+    paramsRef.value = { page: 2 }
+    await wrapper.vm.$nextTick()
+    expect(mockExecute).toHaveBeenCalledWith({ page: 2 })
+  })
+
+  it('falls back to empty array when no data is provided', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(undefined),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+    })
+    const wrapper = await mount(TableComp)
+    const table = wrapper.find('table')
+    expect(table.attributes('data-data')).toBe('[]')
+  })
+
+  it('applies vLoading directive when loading is true', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(true),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('table').exists()).toBe(true)
+  })
+
+  it('handles undefined service without crashing', () => {
+    const [TableComp] = useTable<User>({
+      columns: [],
     })
     expect(() => mount(TableComp)).not.toThrow()
   })

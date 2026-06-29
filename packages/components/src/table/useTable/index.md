@@ -74,6 +74,127 @@ function handleDelete(row: User) {
 </template>
 ```
 
+## Async Request TableData
+
+```vue
+<script setup lang="ts">
+import { useTable } from '@vuetkit/components'
+import { reactive } from 'vue'
+
+interface User {
+  name: string
+  age: number
+  gender: string
+}
+
+interface RequestData extends User {
+  page: number
+  pageSize: number
+}
+
+function getUserList(requestParams: RequestData) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        data: [
+          {
+            name: 'Tom',
+            age: 18,
+            gender: 'male',
+          },
+          {
+            name: 'Lily',
+            age: 20,
+            gender: 'female',
+          },
+          {
+            name: `${requestParams.name}:${requestParams.page}`,
+            age: 22,
+            gender: 'male',
+          },
+        ],
+        total: 100,
+      })
+    }, 1000)
+  })
+}
+
+const params = reactive({
+  name: 'Tom',
+  page: 1,
+  pageSize: 10,
+})
+
+const [TableComp] = useTable<User>({
+  service: getUserList,
+  params,
+  formatData: (res: { data: User[], total: number }) => {
+    return res.data
+  },
+  align: 'center',
+  headerAlign: 'center',
+  columns: [
+    {
+      label: 'Name',
+      prop: 'name',
+    },
+    {
+      label: 'Age',
+      prop: 'age',
+    },
+    {
+      label: 'Gender',
+      prop: 'gender',
+    },
+  ],
+  data: [
+    {
+      name: 'John Doe',
+      age: 30,
+      gender: 'Male',
+    },
+    {
+      name: 'Jane Doe',
+      age: 25,
+      gender: 'Female',
+    },
+  ],
+})
+
+function handleEdit(row: User) {
+  console.log('Edit', row)
+}
+
+function handleDelete(row: User) {
+  console.log('Delete', row)
+}
+
+function handleNextPage() {
+  params.page++
+}
+</script>
+
+<template>
+  <TableComp>
+    <template #actions>
+      <ElTableColumn label="Actions" width="100">
+        <template #default="scope">
+          <el-button type="primary" size="mini" @click="handleEdit(scope.row)">
+            Edit
+          </el-button>
+          <el-button type="danger" size="mini" @click="handleDelete(scope.row)">
+            Delete
+          </el-button>
+        </template>
+      </ElTableColumn>
+    </template>
+  </TableComp>
+  <el-button type="primary" size="mini" @click="handleNextPage">
+    Next Page
+  </el-button>
+</template>
+```
+
 ## Multi-Level Table Header
 
 ```vue
@@ -157,9 +278,15 @@ function handleDelete(row: User) {
 ## Table Options Types
 
 ```ts
-export interface TableOptions<T extends DefaultRow> extends TableProps<T> {
+interface TableOptions<T extends DefaultRow> extends TableProps<T> {
   // Columns
   columns: TableColumnOptions<T>[]
+  // Service
+  service?: RequestService
+  // Service Params
+  params?: MaybeRef<unknown> | unknown
+  // Format Request Data
+  formatData?: (res: unknown) => T[]
   // Align
   align?: 'left' | 'center' | 'right'
   // Header-Align
@@ -170,7 +297,7 @@ export interface TableOptions<T extends DefaultRow> extends TableProps<T> {
 ## TableColumn Options Types
 
 ```ts
-export interface TableColumnOptions<T extends DefaultRow> extends TableColumnProps<T> {
+interface TableColumnOptions<T extends DefaultRow> extends TableColumnProps<T> {
   // Custom render
   render?: (row: T) => VNode | string
   // Add children columns

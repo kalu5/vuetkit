@@ -1,9 +1,11 @@
+import type { RequestService } from '@vuetkit/core'
 import type { TableProps } from 'element-plus'
 import type { TableColumnProps } from 'element-plus/es/components/table/src/table-column/defaults.mjs'
-import type { Component, VNode } from 'vue'
+import type { Component, MaybeRef, VNode } from 'vue'
+import { useRequest } from '@vuetkit/core'
 import { isFunc } from '@vuetkit/shared'
-import { ElTable, ElTableColumn } from 'element-plus'
-import { defineComponent, h } from 'vue'
+import { ElTable, ElTableColumn, vLoading } from 'element-plus'
+import { computed, defineComponent, h, onMounted, toValue, watch, withDirectives } from 'vue'
 
 type DefaultRow = Record<PropertyKey, any>
 
@@ -19,6 +21,12 @@ export interface TableColumnOptions<T extends DefaultRow> extends TableColumnPro
 export interface TableOptions<T extends DefaultRow> extends TableProps<T> {
   // Columns
   columns: TableColumnOptions<T>[]
+  // Service
+  service?: RequestService
+  // Service Params
+  params?: MaybeRef<unknown> | unknown
+  // Format Request Data
+  formatData?: (res: unknown) => T[]
   // Align
   align?: 'left' | 'center' | 'right'
   // Header-Align
@@ -31,23 +39,26 @@ export type TableReturn = [
 ]
 
 export function useTable<T extends DefaultRow>(options: TableOptions<T>): TableReturn {
-  const { columns, align, headerAlign, ...rest } = options
+  const { columns = [], service, params, formatData, align, headerAlign, data, ...rest } = options
 
   const TableComp = defineComponent((props, { slots }) => {
+    const { data: asyncRequestData, loading, execute } = useRequest<T[]>(service!, {
+      manual: false,
+      defaultParams: toValue(params),
+      formatData,
+    })
     const renderTableItemNodes = (column: TableColumnOptions<T>) => {
-      // Custom render
       if (isFunc(column.render)) {
         return {
           default: ({ row }: { row: T }) => column.render!(row as T),
         }
       }
-      // Render Multiple TableHeader
       const tableItemNodes: unknown[] = []
       if (column?.children?.length) {
         /* eslint-disable-next-line ts/no-use-before-define */
         tableItemNodes.push(...renderTableItems(column.children))
       }
-      return () => tableItemNodes
+      return tableItemNodes.length ? () => tableItemNodes : undefined
     }
 
     const renderTableItem = (column: TableColumnOptions<T>) => {
@@ -68,10 +79,29 @@ export function useTable<T extends DefaultRow>(options: TableOptions<T>): TableR
       })
     }
 
+    onMounted(() => {
+      if (service) {
+        execute()
+      }
+    })
+
+    watch(() => toValue(params), (newVal) => {
+      if (service) {
+        execute(newVal)
+      }
+    }, {
+      deep: true,
+    })
+
+    const tableData = computed(() => {
+      return asyncRequestData.value || data || []
+    })
+
     return () => {
-      return h(ElTable, {
+      return withDirectives(h(ElTable, {
         ...rest,
         ...props,
+        data: tableData.value,
       }, {
         default: () => {
           const tableNodes: unknown[] = []
@@ -86,7 +116,9 @@ export function useTable<T extends DefaultRow>(options: TableOptions<T>): TableR
         },
         append: slots?.append,
         empty: slots?.empty,
-      })
+      }), [
+        [vLoading, loading.value],
+      ])
     }
   })
 

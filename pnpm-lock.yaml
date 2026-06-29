@@ -144,6 +144,9 @@ importers:
 
   packages/components:
     dependencies:
+      '@vuetkit/core':
+        specifier: workspace:*
+        version: link:../core
       '@vuetkit/shared':
         specifier: workspace:*
         version: link:../shared
