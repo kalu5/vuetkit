@@ -16,6 +16,7 @@ vi.mock('element-plus', () => ({
         'data-border': props.border ? 'true' : 'false',
         'data-stripe': props.stripe ? 'true' : 'false',
         'data-size': props.size || '',
+        'data-max-height': props.maxHeight != null ? String(props.maxHeight) : '',
       }, [
         slots.default?.(),
         slots.append?.(),
@@ -34,6 +35,24 @@ vi.mock('element-plus', () => ({
       }, slots.default?.({ row: { id: 1, name: 'Test', age: 20, address: { city: '', street: '' } } }))
     },
   }),
+  ElPagination: defineComponent({
+    props: ['currentPage', 'pageSize', 'total', 'layout', 'pageSizes', 'background', 'small', 'disabled', 'hideOnSinglePage', 'pagerCount', 'onUpdate:currentPage', 'onUpdate:pageSize'],
+    setup(props) {
+      return () => h('div', {
+        'class': 'el-pagination',
+        'data-current-page': String(props.currentPage),
+        'data-page-size': String(props.pageSize),
+        'data-total': String(props.total),
+        'data-layout': props.layout || '',
+        'data-page-sizes': props.pageSizes ? JSON.stringify(props.pageSizes) : '',
+        'data-background': props.background ? 'true' : 'false',
+        'data-small': props.small ? 'true' : 'false',
+      }, [
+        h('button', { class: 'pg-next-page', onClick: () => props['onUpdate:currentPage']?.(props.currentPage + 1) }, 'Next'),
+        h('button', { class: 'pg-change-size', onClick: () => props['onUpdate:pageSize']?.(20) }, 'Size'),
+      ])
+    },
+  }),
   vLoading: {
     mounted: vi.fn(),
     unmounted: vi.fn(),
@@ -42,6 +61,7 @@ vi.mock('element-plus', () => ({
 
 vi.mock('@vuetkit/shared', () => ({
   isFunc: vi.fn((val: unknown) => typeof val === 'function'),
+  realObj: vi.fn((val: unknown) => Object.prototype.toString.call(val) === '[object Object]'),
 }))
 
 vi.mock('@vuetkit/core', () => ({
@@ -214,17 +234,22 @@ describe('useTable', () => {
   })
 
   it('passes component props to ElTable', () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(undefined),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
     const [TableComp] = useTable<User>({
       columns: [],
+      data: [{ id: 1, name: 'Test', age: 20, address: { city: '', street: '' } }],
+      maxHeight: 500,
     })
-    const wrapper = mount(TableComp, {
-      props: {
-        data: [{ id: 1, name: 'Test', age: 20, address: { city: '', street: '' } }],
-        maxHeight: 500,
-      },
-    })
+    const wrapper = mount(TableComp)
     const table = wrapper.find('table')
     expect(table.attributes('data-data')).toBe('[{"id":1,"name":"Test","age":20,"address":{"city":"","street":""}}]')
+    expect(table.attributes('data-max-height')).toBe('500')
   })
 
   it('supports actions slot', () => {
@@ -508,6 +533,23 @@ describe('useTable', () => {
     expect(table.attributes('data-data')).toBe('[]')
   })
 
+  it('falls back to empty array when data is explicitly null', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(undefined),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      data: null as unknown as any,
+    })
+    const wrapper = await mount(TableComp)
+    const table = wrapper.find('table')
+    expect(table.attributes('data-data')).toBe('[]')
+  })
+
   it('applies vLoading directive when loading is true', async () => {
     vi.mocked(useRequest).mockReturnValue({
       data: ref([]),
@@ -528,5 +570,752 @@ describe('useTable', () => {
       columns: [],
     })
     expect(() => mount(TableComp)).not.toThrow()
+  })
+
+  it('supports header slot', () => {
+    const [TableComp] = useTable<User>({
+      columns: [],
+    })
+    const wrapper = mount(TableComp, {
+      slots: {
+        header: () => h('div', { class: 'header-content' }, 'Header'),
+      },
+    })
+    expect(wrapper.find('.header-content').exists()).toBe(true)
+  })
+
+  // ============ paginationConfig validation ============
+  it('throws when paginationConfig is true and params is not an object', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: 'not-an-object',
+    })).toThrow('params is object when paginationConfig is required')
+  })
+
+  it('throws when paginationConfig is true and params is an array', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: [1, 2, 3],
+    })).toThrow('params is object when paginationConfig is required')
+  })
+
+  it('throws when paginationConfig is true and params is null', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: null,
+    })).toThrow('params is object when paginationConfig is required')
+  })
+
+  it('throws when paginationConfig is true and params is a number', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: 123,
+    })).toThrow('params is object when paginationConfig is required')
+  })
+
+  it('throws when paginationConfig is an object and params is not an object', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      paginationConfig: { wrapStyle: {} },
+      params: undefined,
+    })).toThrow('params is object when paginationConfig is required')
+  })
+
+  it('does not throw when paginationConfig is true and params is a plain object', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'test' },
+    })).not.toThrow()
+  })
+
+  it('does not throw when paginationConfig is an object and params is a plain object', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      paginationConfig: { wrapStyle: {} },
+      params: { keyword: 'test' },
+    })).not.toThrow()
+  })
+
+  it('does not throw when paginationConfig is false and params is not an object', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      paginationConfig: false,
+      params: 'string-param',
+    })).not.toThrow()
+  })
+
+  it('does not throw when paginationConfig is undefined and params is not an object', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      params: 123,
+    })).not.toThrow()
+  })
+
+  // ============ requestParams computed ============
+  it('builds requestParams with currentPage and pageSize when paginationConfig is true', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      paginationConfig: true,
+      params: { keyword: 'test' },
+    })
+    await mount(TableComp)
+    // defaultParams passed to useRequest should contain pagination fields
+    expect(useRequest).toHaveBeenCalledWith(mockService, expect.objectContaining({
+      defaultParams: expect.objectContaining({
+        keyword: 'test',
+        currentPage: 1,
+        pageSize: 10,
+      }),
+    }))
+  })
+
+  it('requestParams excludes pagination fields when paginationConfig is false', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      paginationConfig: false,
+      params: { keyword: 'test' },
+    })
+    await mount(TableComp)
+    expect(useRequest).toHaveBeenCalledWith(mockService, expect.objectContaining({
+      defaultParams: { keyword: 'test' },
+    }))
+  })
+
+  it('requestParams returns undefined params when no params provided and no pagination', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+    })
+    await mount(TableComp)
+    expect(useRequest).toHaveBeenCalledWith(mockService, expect.objectContaining({
+      defaultParams: undefined,
+    }))
+  })
+
+  it('requestParams handles pagination with undefined params gracefully', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    // params undefined but paginationConfig false -> no throw, requestParams = undefined
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      paginationConfig: false,
+    })
+    await mount(TableComp)
+    expect(useRequest).toHaveBeenCalledWith(mockService, expect.objectContaining({
+      defaultParams: undefined,
+    }))
+  })
+
+  // ============ tableData / tableTotal computed ============
+  it('tableData extracts data field from PaginationData when paginationConfig is true', async () => {
+    const paginatedData = {
+      data: [{ id: 1, name: 'Paged', age: 20, address: { city: '', street: '' } }],
+      total: 1,
+    }
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(paginatedData),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const table = wrapper.find('table')
+    expect(table.attributes('data-data')).toBe('[{"id":1,"name":"Paged","age":20,"address":{"city":"","street":""}}]')
+  })
+
+  it('tableTotal extracts total field from PaginationData when paginationConfig is true', async () => {
+    const paginatedData = {
+      data: [{ id: 1, name: 'Paged', age: 20, address: { city: '', street: '' } }],
+      total: 42,
+    }
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(paginatedData),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const pagination = wrapper.find('.el-pagination')
+    expect(pagination.attributes('data-total')).toBe('42')
+  })
+
+  it('tableData falls back to empty array when pagination data is undefined', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(undefined),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const table = wrapper.find('table')
+    expect(table.attributes('data-data')).toBe('[]')
+  })
+
+  it('tableTotal falls back to 0 when pagination data is undefined', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(undefined),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const pagination = wrapper.find('.el-pagination')
+    expect(pagination.attributes('data-total')).toBe('0')
+  })
+
+  it('tableTotal falls back to data length when paginationConfig is false', async () => {
+    const listData = [
+      { id: 1, name: 'A', age: 1, address: { city: '', street: '' } },
+      { id: 2, name: 'B', age: 2, address: { city: '', street: '' } },
+    ]
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(listData),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: vi.fn(),
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('.el-pagination').exists()).toBe(false)
+  })
+
+  // ============ renderPagination ============
+  it('renders pagination when paginationConfig is true', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('.el-pagination').exists()).toBe(true)
+  })
+
+  it('renders pagination when paginationConfig is an object', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: { wrapStyle: { color: 'red' } },
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('.el-pagination').exists()).toBe(true)
+  })
+
+  it('does not render pagination when paginationConfig is false', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: false,
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('.el-pagination').exists()).toBe(false)
+  })
+
+  it('does not render pagination when paginationConfig is undefined', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('.el-pagination').exists()).toBe(false)
+  })
+
+  it('applies default wrap style when paginationConfig is true', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const paginationWrap = wrapper.find('.el-pagination').element.parentElement
+    expect(paginationWrap?.getAttribute('style')).toContain('display: flex')
+    expect(paginationWrap?.getAttribute('style')).toContain('justify-content: flex-end')
+    expect(paginationWrap?.getAttribute('style')).toContain('margin: 20px')
+  })
+
+  it('applies custom wrapStyle when paginationConfig is an object', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: { wrapStyle: { justifyContent: 'center', padding: '10px' } },
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const paginationWrap = wrapper.find('.el-pagination').element.parentElement
+    expect(paginationWrap?.getAttribute('style')).toContain('justify-content: center')
+    expect(paginationWrap?.getAttribute('style')).toContain('padding: 10px')
+    expect(paginationWrap?.getAttribute('style')).not.toContain('margin: 20px')
+  })
+
+  it('falls back to default wrap style when paginationConfig object has no wrapStyle', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: { layout: 'prev, pager, next' },
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const paginationWrap = wrapper.find('.el-pagination').element.parentElement
+    expect(paginationWrap?.getAttribute('style')).toContain('display: flex')
+    expect(paginationWrap?.getAttribute('style')).toContain('margin: 20px')
+  })
+
+  it('uses default layout when paginationConfig is true', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const pagination = wrapper.find('.el-pagination')
+    expect(pagination.attributes('data-layout')).toBe('total, sizes, prev, pager, next, jumper')
+  })
+
+  it('uses custom layout when paginationConfig object provides layout', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: { wrapStyle: {}, layout: 'prev, pager, next' },
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const pagination = wrapper.find('.el-pagination')
+    expect(pagination.attributes('data-layout')).toBe('prev, pager, next')
+  })
+
+  it('falls back to default layout when paginationConfig object has no layout', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: { wrapStyle: {} },
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const pagination = wrapper.find('.el-pagination')
+    expect(pagination.attributes('data-layout')).toBe('total, sizes, prev, pager, next, jumper')
+  })
+
+  it('passes custom pagination props (pageSizes, background) when paginationConfig is an object', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: {
+        wrapStyle: {},
+        pageSizes: [10, 20, 50],
+        background: true,
+        small: true,
+      },
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const pagination = wrapper.find('.el-pagination')
+    expect(pagination.attributes('data-page-sizes')).toBe('[10,20,50]')
+    expect(pagination.attributes('data-background')).toBe('true')
+    expect(pagination.attributes('data-small')).toBe('true')
+  })
+
+  it('passes initial currentPage and pageSize to ElPagination', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const pagination = wrapper.find('.el-pagination')
+    expect(pagination.attributes('data-current-page')).toBe('1')
+    expect(pagination.attributes('data-page-size')).toBe('10')
+  })
+
+  // ============ pagination event handlers ============
+  it('updates currentPage via onUpdate:currentPage event', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const nextBtn = wrapper.find('.pg-next-page')
+    await nextBtn.trigger('click')
+    const pagination = wrapper.find('.el-pagination')
+    expect(pagination.attributes('data-current-page')).toBe('2')
+  })
+
+  it('updates pageSize via onUpdate:pageSize event', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    const sizeBtn = wrapper.find('.pg-change-size')
+    await sizeBtn.trigger('click')
+    const pagination = wrapper.find('.el-pagination')
+    expect(pagination.attributes('data-page-size')).toBe('20')
+  })
+
+  // ============ pagination watch / execute triggers ============
+  it('calls execute with pagination params onMounted when service and paginationConfig provided', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    await mount(TableComp)
+    expect(mockExecute).toHaveBeenCalledTimes(1)
+  })
+
+  it('triggers execute when currentPage changes', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    mockExecute.mockClear()
+    const nextBtn = wrapper.find('.pg-next-page')
+    await nextBtn.trigger('click')
+    await wrapper.vm.$nextTick()
+    expect(mockExecute).toHaveBeenCalledTimes(1)
+    expect(mockExecute).toHaveBeenCalledWith(expect.objectContaining({
+      keyword: 'x',
+      currentPage: 2,
+      pageSize: 10,
+    }))
+  })
+
+  it('triggers execute when pageSize changes', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    mockExecute.mockClear()
+    const sizeBtn = wrapper.find('.pg-change-size')
+    await sizeBtn.trigger('click')
+    await wrapper.vm.$nextTick()
+    expect(mockExecute).toHaveBeenCalledTimes(1)
+    expect(mockExecute).toHaveBeenCalledWith(expect.objectContaining({
+      keyword: 'x',
+      currentPage: 1,
+      pageSize: 20,
+    }))
+  })
+
+  it('does not trigger execute on page change when no service provided', async () => {
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: { keyword: 'x' },
+    })
+    const wrapper = await mount(TableComp)
+    mockExecute.mockClear()
+    const nextBtn = wrapper.find('.pg-next-page')
+    await nextBtn.trigger('click')
+    await wrapper.vm.$nextTick()
+    expect(mockExecute).not.toHaveBeenCalled()
+  })
+
+  it('triggers execute when params change with paginationConfig', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const paramsRef = ref({ keyword: 'a' })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      paginationConfig: true,
+      params: paramsRef,
+    })
+    const wrapper = await mount(TableComp)
+    mockExecute.mockClear()
+    paramsRef.value = { keyword: 'b' }
+    await wrapper.vm.$nextTick()
+    expect(mockExecute).toHaveBeenCalledTimes(1)
+    expect(mockExecute).toHaveBeenCalledWith(expect.objectContaining({
+      keyword: 'b',
+      currentPage: 1,
+      pageSize: 10,
+    }))
+  })
+
+  it('triggers execute when params ref is replaced (not mutated)', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const paramsRef = ref({ keyword: 'a' })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      paginationConfig: true,
+      params: paramsRef,
+    })
+    const wrapper = await mount(TableComp)
+    mockExecute.mockClear()
+    paramsRef.value = { keyword: 'replaced' }
+    await wrapper.vm.$nextTick()
+    expect(mockExecute).toHaveBeenCalledTimes(1)
+    expect(mockExecute).toHaveBeenCalledWith(expect.objectContaining({
+      keyword: 'replaced',
+      currentPage: 1,
+      pageSize: 10,
+    }))
+  })
+
+  it('triggers execute when nested params property changes (deep watch)', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const paramsRef = ref({ filter: { name: 'a' } })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      paginationConfig: true,
+      params: paramsRef,
+    })
+    const wrapper = await mount(TableComp)
+    mockExecute.mockClear()
+    paramsRef.value.filter.name = 'b'
+    await wrapper.vm.$nextTick()
+    expect(mockExecute).toHaveBeenCalledTimes(1)
+    expect(mockExecute).toHaveBeenCalledWith(expect.objectContaining({
+      currentPage: 1,
+      pageSize: 10,
+    }))
+  })
+
+  it('does not trigger execute on params change without service', async () => {
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const paramsRef = ref({ keyword: 'a' })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      paginationConfig: true,
+      params: paramsRef,
+    })
+    const wrapper = await mount(TableComp)
+    mockExecute.mockClear()
+    paramsRef.value = { keyword: 'b' }
+    await wrapper.vm.$nextTick()
+    expect(mockExecute).not.toHaveBeenCalled()
   })
 })
