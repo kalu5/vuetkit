@@ -1,7 +1,7 @@
 {
   "name": "@vuetkit/shared",
   "type": "module",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "packageManager": "pnpm@10.20.0",
   "description": "Collection of business development utilities for Vue3 projects",
   "author": "Kalu5",
