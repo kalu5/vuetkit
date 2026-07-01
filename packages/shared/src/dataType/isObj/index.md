@@ -19,5 +19,4 @@ isObj(undefined) // false
 isObj('hello') // false
 isObj(123) // false
 isObj(Symbol('symbol')) // false
-
 ```
