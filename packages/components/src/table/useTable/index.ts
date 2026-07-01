@@ -2,10 +2,12 @@ import type { RequestService } from '@vuetkit/core'
 import type { PaginationProps, TableProps } from 'element-plus'
 import type { TableColumnProps } from 'element-plus/es/components/table/src/table-column/defaults.mjs'
 import type { Component, CSSProperties, MaybeRef, VNode, VNodeArrayChildren } from 'vue'
+import type { FormOptions } from '../../form'
 import { useRequest } from '@vuetkit/core'
 import { isFunc, realObj } from '@vuetkit/shared'
-import { ElPagination, ElTable, ElTableColumn, vLoading } from 'element-plus'
+import { ElButton, ElFormItem, ElPagination, ElTable, ElTableColumn, vLoading } from 'element-plus'
 import { computed, defineComponent, h, onMounted, reactive, toValue, watch, withDirectives } from 'vue'
+import { useForm } from '../../form'
 
 type DefaultRow = Record<PropertyKey, any>
 
@@ -45,6 +47,8 @@ export interface TableOptions<T extends DefaultRow> extends TableProps<T> {
   paginationConfig?: boolean | PaginationOptions
   // Table Wrap Style
   tableWrapStyle?: CSSProperties
+  // Search Form Config
+  searchFormConfig?: FormOptions<T>
 }
 
 export type TableReturn = [
@@ -53,10 +57,10 @@ export type TableReturn = [
 ]
 
 export function useTable<T extends DefaultRow>(options: TableOptions<T>): TableReturn {
-  const { columns = [], service, params, formatData, align, headerAlign, paginationConfig, tableWrapStyle = {}, data = [] as T[], ...rest } = options
+  const { columns = [], service, params, formatData, align, headerAlign, paginationConfig, searchFormConfig, tableWrapStyle = {}, data = [] as T[], ...rest } = options
 
-  if (paginationConfig && !realObj(toValue(params))) {
-    throw new Error('params is object when paginationConfig is required')
+  if ((paginationConfig || searchFormConfig) && !realObj(toValue(params))) {
+    throw new Error('params must be an object when paginationConfig or searchFormConfig is provided')
   }
 
   const TableComp = defineComponent((props, { slots }) => {
@@ -65,12 +69,21 @@ export function useTable<T extends DefaultRow>(options: TableOptions<T>): TableR
       currentPage: 1,
     })
 
+    const [SearchForm, { reset, getData }] = searchFormConfig ? useForm(searchFormConfig!) : [null, { reset: () => {}, getData: () => ({}) }]
+
     const requestParams = computed(() => {
       if (paginationConfig) {
         return {
           ...(toValue(params) || {}),
+          ...(searchFormConfig ? getData?.() || {} : {}),
           currentPage: pageInfo.currentPage,
           pageSize: pageInfo.pageSize,
+        }
+      }
+      if (searchFormConfig) {
+        return {
+          ...(toValue(params) || {}),
+          ...(getData?.() || {}),
         }
       }
       return toValue(params)
@@ -113,11 +126,26 @@ export function useTable<T extends DefaultRow>(options: TableOptions<T>): TableR
       })
     }
 
+    function executeRequest() {
+      if (service) {
+        execute(requestParams.value)
+      }
+    }
+
     onMounted(() => {
       if (service) {
         execute()
       }
     })
+
+    const handleReset = () => {
+      reset?.()
+      executeRequest()
+    }
+
+    const handleSearch = () => {
+      executeRequest()
+    }
 
     const defaultPaginationLayout = 'total, sizes, prev, pager, next, jumper'
     const defaultPaginationWrapStyle = {
@@ -128,17 +156,13 @@ export function useTable<T extends DefaultRow>(options: TableOptions<T>): TableR
     }
 
     watch(() => toValue(params), () => {
-      if (service) {
-        execute(requestParams.value)
-      }
+      executeRequest()
     }, {
       deep: true,
     })
 
     watch(() => [pageInfo.currentPage, pageInfo.pageSize], () => {
-      if (service) {
-        execute(requestParams.value)
-      }
+      executeRequest()
     })
 
     const tableData = computed(() => {
@@ -196,8 +220,31 @@ export function useTable<T extends DefaultRow>(options: TableOptions<T>): TableR
       ])
     }
 
+    function renderSearchForm() {
+      return h(SearchForm!, {}, {
+        footer: () => {
+          return h(ElFormItem, {
+          }, () => [
+            h(ElButton, {
+              type: 'default',
+              size: searchFormConfig?.size || 'small',
+              onClick: handleReset,
+            }, () => 'Reset'),
+            h(ElButton, {
+              type: 'primary',
+              size: searchFormConfig?.size || 'small',
+              onClick: handleSearch,
+            }, () => 'Search'),
+          ])
+        },
+      })
+    }
+
     function renderTableWrapChildNodes() {
       const childNodes: VNodeArrayChildren = []
+      if (searchFormConfig) {
+        childNodes.push(renderSearchForm())
+      }
       if (slots?.header) {
         childNodes.push(slots.header())
       }
@@ -210,7 +257,9 @@ export function useTable<T extends DefaultRow>(options: TableOptions<T>): TableR
 
     return () => {
       return h('div', {
-        style: tableWrapStyle,
+        style: {
+          ...tableWrapStyle || {},
+        },
       }, renderTableWrapChildNodes())
     }
   })

@@ -251,7 +251,7 @@ function handleNextPage() {
 
 ::: danger
 
-1. Please note that paginationConfig is required when params is an object.
+1. Please note that params must be an object when paginationConfig is required.
 2. Please note that service must return a Promise<{ data: T[], total: number }>.
 
 :::
@@ -311,6 +311,109 @@ const [TableComp] = useTable<User>({
   paginationConfig: true,
   align: 'center',
   headerAlign: 'center',
+  columns: [
+    {
+      label: 'Name',
+      prop: 'name',
+    },
+    {
+      label: 'Age',
+      prop: 'age',
+    },
+    {
+      label: 'Gender',
+      prop: 'gender',
+    },
+  ],
+  data: [
+  ],
+})
+</script>
+
+<template>
+  <TableComp />
+</template>
+```
+
+## Search Form
+
+- More configuration please refer to `useForm` `FormOptions`
+
+::: danger
+
+Please note that params must be an object when searchFormConfig is required .
+
+:::
+
+```vue
+<script setup lang="ts">
+import { useTable } from '@vuetkit/components'
+import { reactive } from 'vue'
+
+interface User {
+  name: string
+  age: number
+  gender: string
+}
+
+interface RequestData extends User {
+  page: number
+  pageSize: number
+}
+
+function getUserList(requestParams: RequestData) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        data: [
+          {
+            name: 'Tom',
+            age: 18,
+            gender: 'male',
+          },
+          {
+            name: 'Lily',
+            age: 20,
+            gender: 'female',
+          },
+          {
+            name: `${requestParams.name}:${requestParams.page}`,
+            age: 22,
+            gender: 'male',
+          },
+        ],
+        total: 100,
+      })
+    }, 1000)
+  })
+}
+
+const params = reactive({
+  name: 'Tom',
+  page: 1,
+  pageSize: 10,
+})
+
+const [TableComp] = useTable<User>({
+  service: getUserList,
+  params,
+  paginationConfig: true,
+  align: 'center',
+  headerAlign: 'center',
+  searchFormConfig: {
+    schemas: [
+      {
+        label: 'Name',
+        prop: 'name',
+        component: 'el-input',
+      },
+      {
+        label: 'Age',
+        prop: 'age',
+        component: 'el-input-number',
+      },
+    ],
+  },
   columns: [
     {
       label: 'Name',
@@ -435,6 +538,8 @@ interface TableOptions<T extends DefaultRow> extends TableProps<T> {
   paginationConfig?: boolean | PaginationOptions
   // Table Wrap Style
   tableWrapStyle?: CSSProperties
+  // Search Form Config
+  searchFormConfig?: FormOptions<T>
 }
 
 type TableReturn = [

@@ -4,6 +4,7 @@ import { useRequest } from '@vuetkit/core'
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, ref } from 'vue'
+import { useForm } from '../../form'
 
 import { useTable } from './index'
 
@@ -53,6 +54,28 @@ vi.mock('element-plus', () => ({
       ])
     },
   }),
+  ElFormItem: defineComponent({
+    props: ['label', 'prop', 'size'],
+    setup(props, { slots }) {
+      return () => h('div', {
+        'class': 'el-form-item',
+        'data-label': props.label || '',
+        'data-prop': props.prop || '',
+        'data-size': props.size || '',
+      }, slots.default?.())
+    },
+  }),
+  ElButton: defineComponent({
+    props: ['type', 'size', 'onClick'],
+    setup(props, { slots }) {
+      return () => h('button', {
+        class: `el-button el-button--${props.type || 'default'}`,
+        type: props.type,
+        size: props.size,
+        onClick: props.onClick,
+      }, slots.default?.())
+    },
+  }),
   vLoading: {
     mounted: vi.fn(),
     unmounted: vi.fn(),
@@ -72,6 +95,23 @@ vi.mock('@vuetkit/core', () => ({
     execute: vi.fn(),
     cancel: vi.fn(),
   })),
+}))
+
+const mockFormComp = defineComponent({
+  setup(props: any, { slots }: any) {
+    return () => h('form', { class: 'search-form' }, slots.footer?.())
+  },
+})
+
+const mockFormMethods = {
+  reset: vi.fn(),
+  getData: vi.fn(() => ({})),
+  validate: vi.fn(),
+  setData: vi.fn(),
+}
+
+vi.mock('../../form', () => ({
+  useForm: vi.fn(() => [mockFormComp, mockFormMethods]),
 }))
 
 beforeEach(() => {
@@ -590,7 +630,7 @@ describe('useTable', () => {
       columns: [],
       paginationConfig: true,
       params: 'not-an-object',
-    })).toThrow('params is object when paginationConfig is required')
+    })).toThrow('params must be an object when paginationConfig or searchFormConfig is provided')
   })
 
   it('throws when paginationConfig is true and params is an array', () => {
@@ -598,7 +638,7 @@ describe('useTable', () => {
       columns: [],
       paginationConfig: true,
       params: [1, 2, 3],
-    })).toThrow('params is object when paginationConfig is required')
+    })).toThrow('params must be an object when paginationConfig or searchFormConfig is provided')
   })
 
   it('throws when paginationConfig is true and params is null', () => {
@@ -606,7 +646,7 @@ describe('useTable', () => {
       columns: [],
       paginationConfig: true,
       params: null,
-    })).toThrow('params is object when paginationConfig is required')
+    })).toThrow('params must be an object when paginationConfig or searchFormConfig is provided')
   })
 
   it('throws when paginationConfig is true and params is a number', () => {
@@ -614,7 +654,7 @@ describe('useTable', () => {
       columns: [],
       paginationConfig: true,
       params: 123,
-    })).toThrow('params is object when paginationConfig is required')
+    })).toThrow('params must be an object when paginationConfig or searchFormConfig is provided')
   })
 
   it('throws when paginationConfig is an object and params is not an object', () => {
@@ -622,7 +662,7 @@ describe('useTable', () => {
       columns: [],
       paginationConfig: { wrapStyle: {} },
       params: undefined,
-    })).toThrow('params is object when paginationConfig is required')
+    })).toThrow('params must be an object when paginationConfig or searchFormConfig is provided')
   })
 
   it('does not throw when paginationConfig is true and params is a plain object', () => {
@@ -1317,5 +1357,672 @@ describe('useTable', () => {
     paramsRef.value = { keyword: 'b' }
     await wrapper.vm.$nextTick()
     expect(mockExecute).not.toHaveBeenCalled()
+  })
+
+  // ============ searchFormConfig validation ============
+  it('throws when searchFormConfig is provided and params is not an object', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      params: 'not-an-object',
+    })).toThrow('params must be an object when paginationConfig or searchFormConfig is provided')
+  })
+
+  it('throws when searchFormConfig is provided and params is null', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      params: null,
+    })).toThrow('params must be an object when paginationConfig or searchFormConfig is provided')
+  })
+
+  it('does not throw when searchFormConfig is provided and params is a plain object', () => {
+    expect(() => useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      params: { keyword: 'test' },
+    })).not.toThrow()
+  })
+
+  // ============ searchFormConfig rendering ============
+  it('renders search form when searchFormConfig is provided', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('.search-form').exists()).toBe(true)
+  })
+
+  it('does not render search form when searchFormConfig is undefined', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('.search-form').exists()).toBe(false)
+  })
+
+  it('renders search form with Reset and Search buttons', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const buttons = wrapper.findAll('button')
+    expect(buttons.length).toBe(2)
+    expect(buttons[0].text()).toBe('Reset')
+    expect(buttons[1].text()).toBe('Search')
+  })
+
+  it('applies searchFormConfig size to buttons', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [], size: 'large' },
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const buttons = wrapper.findAll('button')
+    buttons.forEach((btn) => {
+      expect(btn.attributes('size')).toBe('large')
+    })
+  })
+
+  it('falls back to small size when searchFormConfig size is not provided', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const buttons = wrapper.findAll('button')
+    buttons.forEach((btn) => {
+      expect(btn.attributes('size')).toBe('small')
+    })
+  })
+
+  // ============ searchFormConfig requestParams ============
+  it('builds requestParams with search form data when searchFormConfig is provided', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockGetData = vi.fn(() => ({ searchKeyword: 'test' }))
+    vi.mocked(useForm).mockReturnValue([mockFormComp, { ...mockFormMethods, getData: mockGetData }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      searchFormConfig: { schemas: [] },
+      params: { baseParam: 'value' },
+    })
+    await mount(TableComp)
+    expect(useRequest).toHaveBeenCalledWith(mockService, expect.objectContaining({
+      defaultParams: expect.objectContaining({
+        baseParam: 'value',
+        searchKeyword: 'test',
+      }),
+    }))
+  })
+
+  it('builds requestParams with search form data and pagination', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockGetData = vi.fn(() => ({ searchKeyword: 'test' }))
+    vi.mocked(useForm).mockReturnValue([mockFormComp, { ...mockFormMethods, getData: mockGetData }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      searchFormConfig: { schemas: [] },
+      paginationConfig: true,
+      params: { baseParam: 'value' },
+    })
+    await mount(TableComp)
+    expect(useRequest).toHaveBeenCalledWith(mockService, expect.objectContaining({
+      defaultParams: expect.objectContaining({
+        baseParam: 'value',
+        searchKeyword: 'test',
+        currentPage: 1,
+        pageSize: 10,
+      }),
+    }))
+  })
+
+  // ============ searchFormConfig event handlers ============
+  it('calls reset and execute when Reset button is clicked', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockReset = vi.fn()
+    const mockGetData = vi.fn(() => ({}))
+    const mockExecute = vi.fn()
+    vi.mocked(useForm).mockReturnValue([mockFormComp, { ...mockFormMethods, reset: mockReset, getData: mockGetData }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      searchFormConfig: { schemas: [] },
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const executeCallCountBefore = mockExecute.mock.calls.length
+    const buttons = wrapper.findAll('button')
+    const resetBtn = buttons.find(b => b.text() === 'Reset')!
+    await resetBtn.trigger('click')
+    expect(mockReset).toHaveBeenCalledTimes(1)
+    expect(mockExecute.mock.calls.length).toBe(executeCallCountBefore + 1)
+  })
+
+  it('calls execute when Search button is clicked', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockGetData = vi.fn(() => ({ keyword: 'search' }))
+    const mockExecute = vi.fn()
+    vi.mocked(useForm).mockReturnValue([mockFormComp, { ...mockFormMethods, getData: mockGetData }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      searchFormConfig: { schemas: [] },
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const executeCallCountBefore = mockExecute.mock.calls.length
+    const buttons = wrapper.findAll('button')
+    const searchBtn = buttons.find(b => b.text() === 'Search')!
+    await searchBtn.trigger('click')
+    expect(mockExecute.mock.calls.length).toBe(executeCallCountBefore + 1)
+    expect(mockExecute).toHaveBeenLastCalledWith(expect.objectContaining({
+      keyword: 'search',
+    }))
+  })
+
+  it('does not call execute on search/reset when no service provided', async () => {
+    const mockReset = vi.fn()
+    const mockGetData = vi.fn(() => ({}))
+    const mockExecute = vi.fn()
+    vi.mocked(useForm).mockReturnValue([mockFormComp, { ...mockFormMethods, reset: mockReset, getData: mockGetData }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const buttons = wrapper.findAll('button')
+    const searchBtn = buttons.find(b => b.text() === 'Search')!
+    await searchBtn.trigger('click')
+    expect(mockExecute).not.toHaveBeenCalled()
+
+    const resetBtn = buttons.find(b => b.text() === 'Reset')!
+    await resetBtn.trigger('click')
+    expect(mockReset).toHaveBeenCalledTimes(1)
+    expect(mockExecute).not.toHaveBeenCalled()
+  })
+
+  // ============ searchFormConfig with pagination ============
+  it('renders both search form and pagination when both configs provided', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      paginationConfig: true,
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('.search-form').exists()).toBe(true)
+    expect(wrapper.find('.el-pagination').exists()).toBe(true)
+  })
+
+  it('calls execute with search form data and pagination params on search', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockGetData = vi.fn(() => ({ keyword: 'test' }))
+    const mockExecute = vi.fn()
+    vi.mocked(useForm).mockReturnValue([mockFormComp, { ...mockFormMethods, getData: mockGetData }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      searchFormConfig: { schemas: [] },
+      paginationConfig: true,
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const buttons = wrapper.findAll('button')
+    const searchBtn = buttons.find(b => b.text() === 'Search')!
+    await searchBtn.trigger('click')
+    await wrapper.vm.$nextTick()
+    expect(mockExecute).toHaveBeenCalledWith(expect.objectContaining({
+      keyword: 'test',
+      currentPage: 1,
+      pageSize: 10,
+    }))
+  })
+
+  // ============ searchFormConfig edge cases ============
+  it('handles searchFormConfig with empty schemas', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      params: {},
+    })
+    expect(() => mount(TableComp)).not.toThrow()
+  })
+
+  it('handles getData returning undefined gracefully', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockGetData = vi.fn(() => undefined) as unknown as () => object
+    vi.mocked(useForm).mockReturnValue([mockFormComp, { ...mockFormMethods, getData: mockGetData }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      searchFormConfig: { schemas: [] },
+      params: { base: 'value' },
+    })
+    expect(() => mount(TableComp)).not.toThrow()
+  })
+
+  it('handles searchFormConfig with null schemas', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: null as unknown as any },
+      params: {},
+    })
+    expect(() => mount(TableComp)).not.toThrow()
+  })
+
+  it('does not render search form when searchFormConfig is not provided', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('.search-form').exists()).toBe(false)
+  })
+
+  it('throws error when params is not an object with searchFormConfig', () => {
+    expect(() => {
+      useTable<User>({
+        columns: [],
+        searchFormConfig: { schemas: [] },
+        params: null as unknown as any,
+      })
+    }).toThrow('params must be an object when paginationConfig or searchFormConfig is provided')
+  })
+
+  it('handles undefined getData return value with pagination', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockGetData = vi.fn(() => undefined) as unknown as () => object
+    vi.mocked(useForm).mockReturnValue([mockFormComp, { ...mockFormMethods, getData: mockGetData }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      searchFormConfig: { schemas: [] },
+      paginationConfig: true,
+      params: {},
+    })
+    expect(() => mount(TableComp)).not.toThrow()
+  })
+
+  it('handles searchFormConfig without pagination', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockGetData = vi.fn(() => ({ keyword: 'test' }))
+    vi.mocked(useForm).mockReturnValue([mockFormComp, { ...mockFormMethods, getData: mockGetData }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      searchFormConfig: { schemas: [] },
+      params: { base: 'value' },
+    })
+    await mount(TableComp)
+    expect(useRequest).toHaveBeenCalledWith(mockService, expect.objectContaining({
+      defaultParams: expect.objectContaining({
+        base: 'value',
+        keyword: 'test',
+      }),
+    }))
+  })
+
+  it('handles null tableWrapStyle', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      tableWrapStyle: null as unknown as any,
+    })
+    expect(() => mount(TableComp)).not.toThrow()
+  })
+
+  it('renders table with column without render and children', () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(undefined),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [
+        { prop: 'id', label: 'ID' },
+      ],
+      data: [{ id: 1, name: 'Test', age: 20, address: { city: '', street: '' } }],
+    })
+    const wrapper = mount(TableComp)
+    const columns = wrapper.findAll('th')
+    expect(columns.length).toBe(1)
+    expect(columns[0].attributes('data-prop')).toBe('id')
+  })
+
+  it('renders table with deeply nested children columns', () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(undefined),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [
+        {
+          label: 'Root',
+          children: [
+            {
+              label: 'Level1',
+              children: [
+                { prop: 'id', label: 'ID' },
+              ],
+            },
+          ],
+        },
+      ],
+    })
+    const wrapper = mount(TableComp)
+    const columns = wrapper.findAll('th')
+    expect(columns.length).toBe(3)
+  })
+
+  it('renders table with header slot', () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(undefined),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+    })
+    const wrapper = mount(TableComp, {
+      slots: {
+        header: () => h('div', { class: 'custom-header' }, 'Custom Header'),
+      },
+    })
+    expect(wrapper.find('.custom-header').exists()).toBe(true)
+  })
+
+  it('renders table with actions slot', () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(undefined),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [{ prop: 'id', label: 'ID' }],
+    })
+    const wrapper = mount(TableComp, {
+      slots: {
+        actions: () => h('th', { class: 'actions-column' }, 'Actions'),
+      },
+    })
+    expect(wrapper.find('.actions-column').exists()).toBe(true)
+  })
+
+  it('renders table with append slot', () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref(undefined),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+    })
+    const wrapper = mount(TableComp, {
+      slots: {
+        append: () => h('div', { class: 'table-append' }, 'Append Content'),
+      },
+    })
+    expect(wrapper.find('.table-append').exists()).toBe(true)
+  })
+
+  it('renders table with empty slot', () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+    })
+    const wrapper = mount(TableComp, {
+      slots: {
+        empty: () => h('div', { class: 'table-empty' }, 'No Data'),
+      },
+    })
+    expect(wrapper.find('.table-empty').exists()).toBe(true)
+  })
+
+  it('handles pagination without searchFormConfig', async () => {
+    const mockService = vi.fn(() => Promise.resolve({ data: [], total: 0 }))
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      paginationConfig: true,
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('.el-pagination').exists()).toBe(true)
+  })
+
+  it('calls noop reset when searchFormConfig is not provided', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    expect(wrapper.find('.search-form').exists()).toBe(false)
+  })
+
+  it('handles params ref becoming undefined with paginationConfig', async () => {
+    const mockService = vi.fn(() => Promise.resolve({ data: [], total: 0 }))
+    const mockExecute = vi.fn()
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref({ data: [], total: 0 }),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const paramsRef = ref<{ keyword?: string } | undefined>({ keyword: 'test' })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      paginationConfig: true,
+      params: paramsRef,
+    })
+    const wrapper = await mount(TableComp)
+    mockExecute.mockClear()
+    paramsRef.value = undefined
+    await wrapper.vm.$nextTick()
+    expect(mockExecute).toHaveBeenCalledWith(expect.objectContaining({
+      currentPage: 1,
+      pageSize: 10,
+    }))
+  })
+
+  it('handles params ref becoming null with searchFormConfig', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockExecute = vi.fn()
+    const mockGetData = vi.fn(() => ({ searchKeyword: 'test' }))
+    vi.mocked(useForm).mockReturnValue([mockFormComp, { ...mockFormMethods, getData: mockGetData }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const paramsRef = ref<{ base?: string } | null>({ base: 'value' })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      searchFormConfig: { schemas: [] },
+      params: paramsRef,
+    })
+    const wrapper = await mount(TableComp)
+    mockExecute.mockClear()
+    paramsRef.value = null
+    await wrapper.vm.$nextTick()
+    expect(mockExecute).toHaveBeenCalledWith(expect.objectContaining({
+      searchKeyword: 'test',
+    }))
   })
 })
