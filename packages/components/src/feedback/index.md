@@ -7,3 +7,7 @@
 - Unified async confirm
 
 [useAsyncConfirm](/components/src/feedback/useAsyncConfirm/)
+
+- Unified dialog component
+
+[useDialog](/components/src/feedback/useDialog/)
