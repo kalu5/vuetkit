@@ -157,9 +157,15 @@ export function setDeepProperty(data: Recordable, propArr: string[], value: unkn
   temp[propArr[propArr.length - 1]] = value
 }
 
-export function useForm<T extends object>(options: FormOptions<T>): FormReturnType<T> {
+export function useForm(options: undefined): [null, Recordable]
+export function useForm<T extends object>(options: FormOptions<T>): FormReturnType<T>
+export function useForm<T extends object>(options?: FormOptions<T>): FormReturnType<T> | [null, Recordable] {
+  if (!options || !options.schemas?.length) {
+    return [null, {}]
+  }
+
   const { schemas = [], rules = {}, colSpan = 24, defaultData, disabled = false, inline = false, size, rowGutter = 20, labelWidth, labelSuffix = '', labelPosition = 'left', 'validate-on-rule-change': validateOnRuleChange = true, enterCallback, customComponent, 'scrollTo-error': scrollToError = false, 'scroll-into-view-options': scrollIntoViewOptions = true, 'status-icon': statusIcon = false, 'require-asterisk-position': requireAsteriskPosition = 'left', 'show-message': showMessage = true, 'inline-message': inlineMessage = false,
-  } = options || {}
+  } = options
 
   type ComponentsKey = DefaultComponentKey | DefaultComponentKey & keyof typeof customComponent
   const components: Record<ComponentsKey, Component> | Record<string, Component> = {}

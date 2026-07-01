@@ -666,6 +666,42 @@ describe('useForm', () => {
     }).not.toThrow()
   })
 
+  it('returns [null, {}] when options is undefined', () => {
+    const [FormComp, api] = useForm(undefined as unknown as FormOptions<UserForm>)
+    expect(FormComp).toBeNull()
+    expect(api).toEqual({})
+  })
+
+  it('returns [null, {}] when options is null', () => {
+    const [FormComp, api] = useForm(null as unknown as FormOptions<UserForm>)
+    expect(FormComp).toBeNull()
+    expect(api).toEqual({})
+  })
+
+  it('returns [null, {}] when options has no schemas', () => {
+    const [FormComp, api] = useForm({} as unknown as FormOptions<UserForm>)
+    expect(FormComp).toBeNull()
+    expect(api).toEqual({})
+  })
+
+  it('returns [null, {}] when options.schemas is undefined', () => {
+    const [FormComp, api] = useForm({ schemas: undefined } as unknown as FormOptions<UserForm>)
+    expect(FormComp).toBeNull()
+    expect(api).toEqual({})
+  })
+
+  it('returns [null, {}] when options.schemas is null', () => {
+    const [FormComp, api] = useForm({ schemas: null } as unknown as FormOptions<UserForm>)
+    expect(FormComp).toBeNull()
+    expect(api).toEqual({})
+  })
+
+  it('returns [null, {}] when options.schemas is empty array', () => {
+    const [FormComp, api] = useForm<UserForm>({ schemas: [] })
+    expect(FormComp).toBeNull()
+    expect(api).toEqual({})
+  })
+
   it('form accepts additional props', () => {
     const [FormComp] = useForm<UserForm>({
       schemas: [
