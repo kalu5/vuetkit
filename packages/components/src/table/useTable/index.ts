@@ -34,7 +34,7 @@ export interface TableOptions<T extends DefaultRow> extends TableProps<T> {
   // Columns
   columns: TableColumnOptions<T>[]
   // Service
-  service?: RequestService
+  service?: RequestService<T[] | PaginationData<T>>
   // Service Params
   params?: MaybeRef<unknown> | unknown
   // Format Request Data

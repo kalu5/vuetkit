@@ -3,7 +3,7 @@ import type { Ref } from 'vue'
 import { realObj } from '@vuetkit/shared'
 import { onMounted, onUnmounted, ref, shallowRef, toValue } from 'vue'
 
-export interface RequestOptions<T> {
+export interface RequestOptions<T, U> {
   // whether to execute the request immediately
   manual?: boolean
   // default params for the request
@@ -13,7 +13,7 @@ export interface RequestOptions<T> {
   // delay loading time
   delayLoadingTime?: number
   // format data before set to data ref
-  formatData?: (data: unknown) => T
+  formatData?: (data: U) => T
   // success callback
   onSuccess?: (data: T) => void
   // error callback
@@ -32,11 +32,16 @@ export interface RequestReturn<T> {
   cancel: () => void
 }
 
-export type RequestService = (params?: any) => Promise<unknown>
+export type RequestService<U> = (params?: any) => Promise<U>
 
-export function useRequest<T>(
-  service: RequestService,
-  options?: RequestOptions<T>,
+/**
+ * useRequest
+ * @description T is the type returned by the request interface or the type returned by formatData.
+ * @description U is the type returned by the request interface. default is T.
+ */
+export function useRequest<T, U = T>(
+  service: RequestService<U>,
+  options?: RequestOptions<T, U>,
 ): RequestReturn<T> {
   const { initialData = null, manual, defaultParams, delayLoadingTime = 300, formatData, onSuccess, onError, onFinally } = options || {}
 
@@ -128,7 +133,7 @@ export function useRequest<T>(
         return
       }
       // format data
-      const formatRes = formatData ? formatData(res) : res as T
+      const formatRes = formatData ? formatData(res as U) : res as T
       // discard request data
       if (isDiscardRequestData.value) {
         return

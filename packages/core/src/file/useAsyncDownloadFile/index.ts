@@ -3,15 +3,15 @@ import { downloadFile } from '@vuetkit/shared'
 import { ref } from 'vue'
 import { useRequest } from '../../network'
 
-export function useAsyncDownloadFile(downloadService: RequestService, fileName: string) {
+export function useAsyncDownloadFile<T extends Blob>(downloadService: RequestService<T>, fileName: string) {
   const downloadColumns = ref<number[]>([])
   const changeDownloadColumns = (ids: number[]) => {
     downloadColumns.value = ids
   }
 
-  const { loading, execute: executeDownload } = useRequest<Blob>(downloadService, {
+  const { loading, execute: executeDownload } = useRequest<T>(downloadService, {
     manual: true,
-    onSuccess: (data: Blob) => {
+    onSuccess: (data: T) => {
       downloadFile(data, fileName)
     },
   })

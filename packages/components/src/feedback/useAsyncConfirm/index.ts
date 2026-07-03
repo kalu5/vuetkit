@@ -19,8 +19,8 @@ export interface AsyncConfirmOptions {
 
 }
 
-export function useAsyncConfirm(
-  confirmService: RequestService,
+export function useAsyncConfirm<T>(
+  confirmService: RequestService<T>,
   options: AsyncConfirmOptions,
 ) {
   const {
