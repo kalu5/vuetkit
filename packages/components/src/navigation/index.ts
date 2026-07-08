@@ -1,3 +1,4 @@
 export * from './useDropdown'
+export * from './useMenu'
 export * from './useSteps'
 export * from './useTabs'
