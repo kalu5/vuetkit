@@ -11,3 +11,7 @@
 - Unified dialog component
 
 [useDialog](/components/src/feedback/useDialog/)
+
+- Unified notification prompt
+
+[useNotification](/components/src/feedback/useNotification/)
