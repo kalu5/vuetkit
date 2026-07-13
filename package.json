@@ -1,7 +1,7 @@
 {
   "name": "@vuetkit/monorepo",
   "type": "module",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "packageManager": "pnpm@10.20.0",
   "description": "Collection of business development tools for Vue3 projects",
   "author": "Kalu5",
