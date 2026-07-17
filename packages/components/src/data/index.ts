@@ -1,5 +1,6 @@
 export * from './useCollapse'
 export * from './useDescriptions'
 export * from './useSegmented'
+export * from './useTimeline'
 export * from './useTree'
 export * from './useTreeV2'
