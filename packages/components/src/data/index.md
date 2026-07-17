@@ -1,5 +1,7 @@
 # Data
 
+- [useCarousel](/components/src/data/useCarousel/)
+
 - [useDescriptions](/components/src/data/useDescriptions/)
 
 - [useCollapse](/components/src/data/useCollapse/)
