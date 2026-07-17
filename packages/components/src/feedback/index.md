@@ -1,17 +1,9 @@
 # Feedback
 
-- Unified message prompt
+- [useMessage](/components/src/feedback/useMessage/)
 
-[useMessage](/components/src/feedback/useMessage/)
+- [useAsyncConfirm](/components/src/feedback/useAsyncConfirm/)
 
-- Unified async confirm
+- [useDialog](/components/src/feedback/useDialog/)
 
-[useAsyncConfirm](/components/src/feedback/useAsyncConfirm/)
-
-- Unified dialog component
-
-[useDialog](/components/src/feedback/useDialog/)
-
-- Unified notification prompt
-
-[useNotification](/components/src/feedback/useNotification/)
+- [useNotification](/components/src/feedback/useNotification/)
