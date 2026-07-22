@@ -36,7 +36,7 @@ Collection of business development Composable Components for Vue3 + ElementPlus 
 
 - [useTree](/components/src/data/useTree/)
 
-- [useTimeline](/components/src/data/useTimeline)
+- [useTimeline](/components/src/data/useTimeline/)
 
 ### Navigation
 
