@@ -12,4 +12,4 @@
 
 - [useTree](/components/src/data/useTree/)
 
-- [useTimeline](/components/src/data/useTimeline)
+- [useTimeline](/components/src/data/useTimeline/)
