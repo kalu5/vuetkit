@@ -25,6 +25,7 @@ export function downloadFile(blob: Blob, fileName: string) {
 
   try {
     elink.href = url
+    document.body.appendChild(elink)
     elink.click()
   }
   catch (error) {
