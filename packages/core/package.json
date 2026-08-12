@@ -1,7 +1,7 @@
 {
   "name": "@vuetkit/core",
   "type": "module",
-  "version": "0.0.27",
+  "version": "0.0.28",
   "packageManager": "pnpm@10.20.0",
   "description": "Collection of business development Composables for Vue3 projects",
   "author": "Kalu5",
