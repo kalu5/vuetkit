@@ -74,6 +74,7 @@ export default defineConfig({
   base: '/vuetkit/',
   head: [['link', { rel: 'icon', href: '/vuetkit/images/logo-small.png' }]],
   description: 'Collection of business development tools for Vue3 projects',
+  srcExclude: ['skill/**'],
   themeConfig: {
     logo: '/images/logo-small.png',
     // https://vitepress.dev/reference/default-theme-config
