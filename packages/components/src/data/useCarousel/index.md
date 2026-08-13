@@ -8,7 +8,7 @@ Quickly define carousel for your data.
 
 ```vue
 <script setup lang="ts">
-import { useCarousel } from '@vuetkit/components'
+import { useCarousel } from '@vuecraft/components'
 
 const [Carousel] = useCarousel({
   columns: [
@@ -31,7 +31,7 @@ const [Carousel] = useCarousel({
 
 ```vue
 <script setup lang="ts">
-import { useCarousel } from '@vuetkit/components'
+import { useCarousel } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Carousel] = useCarousel({
@@ -56,7 +56,7 @@ const [Carousel] = useCarousel({
 
 ```vue
 <script setup lang="ts">
-import { useCarousel } from '@vuetkit/components'
+import { useCarousel } from '@vuecraft/components'
 
 const [Carousel] = useCarousel({
   columns: [
@@ -81,7 +81,7 @@ const [Carousel] = useCarousel({
 
 ```vue
 <script setup lang="ts">
-import { useCarousel } from '@vuetkit/components'
+import { useCarousel } from '@vuecraft/components'
 
 const [Carousel] = useCarousel({
   columns: [
@@ -107,7 +107,7 @@ const [Carousel] = useCarousel({
 
 ```vue
 <script setup lang="ts">
-import { useCarousel } from '@vuetkit/components'
+import { useCarousel } from '@vuecraft/components'
 
 const [Carousel] = useCarousel({
   columns: [
@@ -133,7 +133,7 @@ Control the active slide using the returned active ref.
 
 ```vue
 <script setup lang="ts">
-import { useCarousel } from '@vuetkit/components'
+import { useCarousel } from '@vuecraft/components'
 
 const [Carousel, active] = useCarousel({
   columns: [
@@ -176,7 +176,7 @@ The carousel component exposes `setActiveItem`, `prev` and `next` methods via te
 
 ```vue
 <script setup lang="ts">
-import { useCarousel } from '@vuetkit/components'
+import { useCarousel } from '@vuecraft/components'
 import { ref } from 'vue'
 
 const [Carousel] = useCarousel({
@@ -210,7 +210,7 @@ const carouselRef = ref()
 
 ```vue
 <script setup lang="ts">
-import { useCarousel } from '@vuetkit/components'
+import { useCarousel } from '@vuecraft/components'
 
 async function fetchSlides() {
   const res = await fetch('/api/slides')
@@ -245,7 +245,7 @@ Pass additional props to the underlying ElCarousel component.
 
 ```vue
 <script setup lang="ts">
-import { useCarousel } from '@vuetkit/components'
+import { useCarousel } from '@vuecraft/components'
 
 const [Carousel] = useCarousel({
   columns: [

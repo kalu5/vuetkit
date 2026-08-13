@@ -1,7 +1,7 @@
-import type { RequestService } from '@vuetkit/core'
+import type { RequestService } from '@vuecraft/core'
 import type { TabPaneName, TabsPaneContext, TabsProps } from 'element-plus'
 import type { Component, Ref, VNode } from 'vue'
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 
 import { ElTabPane, ElTabs, vLoading } from 'element-plus'
 import { computed, defineComponent, h, ref, withDirectives } from 'vue'

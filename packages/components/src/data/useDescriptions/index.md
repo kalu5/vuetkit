@@ -8,13 +8,13 @@ Quickly define descriptions for your data.
 
 ```vue
 <script setup lang="ts">
-import { useDescriptions } from '@vuetkit/components'
+import { useDescriptions } from '@vuecraft/components'
 
 const [Descriptions] = useDescriptions({
   columns: [
     {
       label: 'Name',
-      value: 'vuetkit',
+      value: 'vuecraft',
     },
     {
       label: 'Age',
@@ -35,13 +35,13 @@ const [Descriptions] = useDescriptions({
 
 ```vue
 <script setup lang="ts">
-import { useDescriptions } from '@vuetkit/components'
+import { useDescriptions } from '@vuecraft/components'
 
 const [Descriptions] = useDescriptions({
   columns: [
     {
       label: 'Name',
-      value: 'vuetkit',
+      value: 'vuecraft',
     },
     {
       label: 'Age',

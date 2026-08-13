@@ -8,7 +8,7 @@ Quickly define segmented for your data.
 
 ```vue
 <script setup lang="ts">
-import { useSegmented } from '@vuetkit/components'
+import { useSegmented } from '@vuecraft/components'
 
 const [Segmented] = useSegmented({
   defaultValue: 'Mon',
@@ -35,7 +35,7 @@ const [Segmented] = useSegmented({
 
 ```vue
 <script setup lang="ts">
-import { useSegmented } from '@vuetkit/components'
+import { useSegmented } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Segmented] = useSegmented({
@@ -63,7 +63,7 @@ const [Segmented] = useSegmented({
 
 ```vue
 <script setup lang="ts">
-import { useSegmented } from '@vuetkit/components'
+import { useSegmented } from '@vuecraft/components'
 
 const [Segmented] = useSegmented({
   defaultValue: 'Mon',
@@ -91,7 +91,7 @@ Control the selected value using v-model.
 
 ```vue
 <script setup lang="ts">
-import { useSegmented } from '@vuetkit/components'
+import { useSegmented } from '@vuecraft/components'
 
 const [Segmented, value] = useSegmented({
   defaultValue: 'Mon',
@@ -122,7 +122,7 @@ function selectWed() {
 
 ```vue
 <script setup lang="ts">
-import { useSegmented } from '@vuetkit/components'
+import { useSegmented } from '@vuecraft/components'
 
 const [Segmented] = useSegmented({
   defaultValue: 'Mon',
@@ -145,7 +145,7 @@ const [Segmented] = useSegmented({
 
 ```vue
 <script setup lang="ts">
-import { useSegmented } from '@vuetkit/components'
+import { useSegmented } from '@vuecraft/components'
 
 const [Segmented] = useSegmented({
   defaultValue: 'Mon',
@@ -168,7 +168,7 @@ const [Segmented] = useSegmented({
 
 ```vue
 <script setup lang="ts">
-import { useSegmented } from '@vuetkit/components'
+import { useSegmented } from '@vuecraft/components'
 
 const [Segmented] = useSegmented({
   defaultValue: 'Mon',
@@ -191,7 +191,7 @@ const [Segmented] = useSegmented({
 
 ```vue
 <script setup lang="ts">
-import { useSegmented } from '@vuetkit/components'
+import { useSegmented } from '@vuecraft/components'
 
 async function fetchSegmented() {
   const res = await fetch('/api/segmented')
@@ -225,7 +225,7 @@ Pass additional props to the underlying ElSegmented component.
 
 ```vue
 <script setup lang="ts">
-import { useSegmented } from '@vuetkit/components'
+import { useSegmented } from '@vuecraft/components'
 
 const [Segmented] = useSegmented({
   defaultValue: 'Mon',

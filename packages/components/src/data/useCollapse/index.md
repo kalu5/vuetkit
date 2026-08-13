@@ -8,7 +8,7 @@ Quickly define collapse for your data.
 
 ```vue
 <script setup lang="ts">
-import { useCollapse } from '@vuetkit/components'
+import { useCollapse } from '@vuecraft/components'
 
 const [Collapse] = useCollapse({
   columns: [
@@ -37,7 +37,7 @@ const [Collapse] = useCollapse({
 
 ```vue
 <script setup lang="ts">
-import { useCollapse } from '@vuetkit/components'
+import { useCollapse } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Collapse] = useCollapse({
@@ -62,7 +62,7 @@ const [Collapse] = useCollapse({
 
 ```vue
 <script setup lang="ts">
-import { useCollapse } from '@vuetkit/components'
+import { useCollapse } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Collapse] = useCollapse({
@@ -90,7 +90,7 @@ const [Collapse] = useCollapse({
 ```vue
 <script setup lang="ts">
 import { CaretRight } from '@element-plus/icons-vue'
-import { useCollapse } from '@vuetkit/components'
+import { useCollapse } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Collapse] = useCollapse({
@@ -117,7 +117,7 @@ Control the active collapse items using v-model.
 
 ```vue
 <script setup lang="ts">
-import { useCollapse } from '@vuetkit/components'
+import { useCollapse } from '@vuecraft/components'
 
 const [Collapse, activeNames] = useCollapse({
   columns: [
@@ -155,7 +155,7 @@ In accordion mode, only one panel can be expanded at once.
 
 ```vue
 <script setup lang="ts">
-import { useCollapse } from '@vuetkit/components'
+import { useCollapse } from '@vuecraft/components'
 
 const [Collapse] = useCollapse({
   columns: [
@@ -179,7 +179,7 @@ const [Collapse] = useCollapse({
 
 ```vue
 <script setup lang="ts">
-import { useCollapse } from '@vuetkit/components'
+import { useCollapse } from '@vuecraft/components'
 
 async function fetchCollapse() {
   const res = await fetch('/api/collapse')
@@ -214,7 +214,7 @@ Pass additional props to the underlying ElCollapse component.
 
 ```vue
 <script setup lang="ts">
-import { useCollapse } from '@vuetkit/components'
+import { useCollapse } from '@vuecraft/components'
 
 const [Collapse] = useCollapse({
   columns: [

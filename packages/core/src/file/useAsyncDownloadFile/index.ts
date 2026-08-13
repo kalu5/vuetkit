@@ -1,5 +1,5 @@
 import type { RequestService } from '../../network'
-import { downloadFile } from '@vuetkit/shared'
+import { downloadFile } from '@vuecraft/shared'
 import { ref } from 'vue'
 import { useRequest } from '../../network'
 

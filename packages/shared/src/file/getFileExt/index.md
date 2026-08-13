@@ -17,7 +17,7 @@ Get file extension name by file name
 ## Basic Usage
 
 ```ts
-import { getFileExt } from '@vuetkit/shared'
+import { getFileExt } from '@vuecraft/shared'
 
 // get file extension name
 getFileExt('fileName.txt') // 'txt'

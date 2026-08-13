@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "VueTkit"
+  name: "VueCraft"
   text: "Collection of business development tools for Vue3 projects"
   tagline: "Collect commonly used Composable Utilities, Shared Utilities, and Composable Components in development."
   image: "/images/logo-tech.svg"

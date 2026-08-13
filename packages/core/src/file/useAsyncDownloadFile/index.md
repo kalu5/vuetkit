@@ -27,7 +27,7 @@ Support download by search criteria or by selecting multiple columns.
 
 ```vue
 <script setup lang="ts">
-import { useAsyncDownloadFile } from '@vuetkit/core'
+import { useAsyncDownloadFile } from '@vuecraft/core'
 import axios from 'axios'
 
 function downloadService(params: any) {
@@ -58,7 +58,7 @@ function handleDownload() {
 
 ```vue
 <script setup lang="ts">
-import { useAsyncDownloadFile } from '@vuetkit/core'
+import { useAsyncDownloadFile } from '@vuecraft/core'
 import axios from 'axios'
 
 function downloadService(params: any) {

@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils'
-import { downloadFile } from '@vuetkit/shared'
+import { downloadFile } from '@vuecraft/shared'
 /**
  * @vitest-environment jsdom
  */
@@ -7,8 +7,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent } from 'vue'
 import { useAsyncDownloadFile } from './index'
 
-vi.mock('@vuetkit/shared', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('@vuetkit/shared')>()
+vi.mock('@vuecraft/shared', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@vuecraft/shared')>()
   return {
     ...actual,
     downloadFile: vi.fn(),
@@ -141,7 +141,7 @@ describe('useAsyncDownloadFile', () => {
     expect(res.loading.value).toBe(false)
   })
 
-  it('calls downloadFile from @vuetkit/shared with blob and fileName on success', async () => {
+  it('calls downloadFile from @vuecraft/shared with blob and fileName on success', async () => {
     const blob = createBlob(200, 'application/pdf')
     const svc = vi.fn().mockResolvedValue(blob)
     const { result: res } = runInComponent(() =>

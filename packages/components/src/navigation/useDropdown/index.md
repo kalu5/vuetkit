@@ -8,7 +8,7 @@ Quickly define dropdown menus for your navigation.
 
 ```vue
 <script setup lang="ts">
-import { useDropdown } from '@vuetkit/components'
+import { useDropdown } from '@vuecraft/components'
 
 const [Dropdown] = useDropdown({
   items: [
@@ -36,7 +36,7 @@ The returned `command` ref tracks the last selected item's command, and the `onC
 
 ```vue
 <script setup lang="ts">
-import { useDropdown } from '@vuetkit/components'
+import { useDropdown } from '@vuecraft/components'
 
 const [Dropdown, command] = useDropdown({
   items: [
@@ -62,7 +62,7 @@ const [Dropdown, command] = useDropdown({
 
 ```vue
 <script setup lang="ts">
-import { useDropdown } from '@vuetkit/components'
+import { useDropdown } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Dropdown] = useDropdown({
@@ -94,7 +94,7 @@ Pass `disabled`, `divided`, and `icon` to each item.
 ```vue
 <script setup lang="ts">
 import { Plus } from '@element-plus/icons-vue'
-import { useDropdown } from '@vuetkit/components'
+import { useDropdown } from '@vuecraft/components'
 
 const [Dropdown] = useDropdown({
   items: [
@@ -119,7 +119,7 @@ const [Dropdown] = useDropdown({
 
 ```vue
 <script setup lang="ts">
-import { useDropdown } from '@vuetkit/components'
+import { useDropdown } from '@vuecraft/components'
 
 const [Dropdown] = useDropdown({
   items: [
@@ -144,7 +144,7 @@ const [Dropdown] = useDropdown({
 
 ```vue
 <script setup lang="ts">
-import { useDropdown } from '@vuetkit/components'
+import { useDropdown } from '@vuecraft/components'
 
 const [Dropdown] = useDropdown({
   items: [
@@ -172,7 +172,7 @@ Use the `dropdown` slot to fully customize the dropdown content.
 
 ```vue
 <script setup lang="ts">
-import { useDropdown } from '@vuetkit/components'
+import { useDropdown } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Dropdown] = useDropdown({
@@ -198,7 +198,7 @@ const [Dropdown] = useDropdown({
 
 ```vue
 <script setup lang="ts">
-import { useDropdown } from '@vuetkit/components'
+import { useDropdown } from '@vuecraft/components'
 
 async function fetchItems() {
   const res = await fetch('/api/dropdown-items')
@@ -236,7 +236,7 @@ Pass additional props to the underlying ElDropdown component.
 
 ```vue
 <script setup lang="ts">
-import { useDropdown } from '@vuetkit/components'
+import { useDropdown } from '@vuecraft/components'
 
 const [Dropdown] = useDropdown({
   items: [

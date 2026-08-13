@@ -6,7 +6,7 @@ Quick create dialog component.
 
 ```vue
 <script setup lang="ts">
-import { useDialog } from '@vuetkit/components'
+import { useDialog } from '@vuecraft/components'
 
 const [Dialog, { open, close }] = useDialog({
   title: 'Dialog Title',

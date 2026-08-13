@@ -8,7 +8,7 @@ Quickly define a virtualized tree for your data.
 
 ```vue
 <script setup lang="ts">
-import { useTreeV2 } from '@vuetkit/components'
+import { useTreeV2 } from '@vuecraft/components'
 
 const [TreeV2] = useTreeV2({
   data: [
@@ -38,7 +38,7 @@ const [TreeV2] = useTreeV2({
 
 ```vue
 <script setup lang="ts">
-import { useTreeV2 } from '@vuetkit/components'
+import { useTreeV2 } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [TreeV2] = useTreeV2({
@@ -66,7 +66,7 @@ const [TreeV2] = useTreeV2({
 
 ```vue
 <script setup lang="ts">
-import { useTreeV2 } from '@vuetkit/components'
+import { useTreeV2 } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [TreeV2] = useTreeV2({
@@ -89,7 +89,7 @@ const [TreeV2] = useTreeV2({
 
 ```vue
 <script setup lang="ts">
-import { useTreeV2 } from '@vuetkit/components'
+import { useTreeV2 } from '@vuecraft/components'
 
 const [TreeV2] = useTreeV2({
   data: [
@@ -114,7 +114,7 @@ const [TreeV2] = useTreeV2({
 
 ```vue
 <script setup lang="ts">
-import { useTreeV2 } from '@vuetkit/components'
+import { useTreeV2 } from '@vuecraft/components'
 
 const [TreeV2] = useTreeV2({
   showCheckbox: true,
@@ -138,7 +138,7 @@ Use the returned ref to call exposed methods like `filter`, `getCheckedKeys`, et
 
 ```vue
 <script setup lang="ts">
-import { useTreeV2 } from '@vuetkit/components'
+import { useTreeV2 } from '@vuecraft/components'
 
 const [TreeV2, treeRef] = useTreeV2({
   showCheckbox: true,
@@ -167,7 +167,7 @@ function logCheckedKeys() {
 
 ```vue
 <script setup lang="ts">
-import { useTreeV2 } from '@vuetkit/components'
+import { useTreeV2 } from '@vuecraft/components'
 
 async function fetchTree() {
   const res = await fetch('/api/tree')
@@ -198,7 +198,7 @@ Pass additional props to the underlying ElTreeV2 component.
 
 ```vue
 <script setup lang="ts">
-import { useTreeV2 } from '@vuetkit/components'
+import { useTreeV2 } from '@vuecraft/components'
 
 const [TreeV2] = useTreeV2({
   height: 300,

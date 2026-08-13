@@ -1,7 +1,7 @@
-import type { RequestService } from '@vuetkit/core'
+import type { RequestService } from '@vuecraft/core'
 import type { CarouselItemProps, CarouselProps } from 'element-plus'
 import type { Component, Ref, VNode } from 'vue'
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 
 import { ElCarousel, ElCarouselItem, vLoading } from 'element-plus'
 import { computed, defineComponent, h, ref, watch, withDirectives } from 'vue'

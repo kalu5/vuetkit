@@ -1,6 +1,6 @@
-import type { RequestService } from '@vuetkit/core'
+import type { RequestService } from '@vuecraft/core'
 import type { Component, VNode } from 'vue'
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 
 import { ElBreadcrumb, ElBreadcrumbItem, vLoading } from 'element-plus'
 import { computed, defineComponent, h, withDirectives } from 'vue'

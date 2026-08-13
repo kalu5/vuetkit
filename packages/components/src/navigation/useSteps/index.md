@@ -8,7 +8,7 @@ Quickly define steps for your navigation.
 
 ```vue
 <script setup lang="ts">
-import { useSteps } from '@vuetkit/components'
+import { useSteps } from '@vuecraft/components'
 
 const [Steps] = useSteps({
   steps: [
@@ -39,7 +39,7 @@ const [Steps] = useSteps({
 
 ```vue
 <script setup lang="ts">
-import { useSteps } from '@vuetkit/components'
+import { useSteps } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Steps] = useSteps({
@@ -77,7 +77,7 @@ const [Steps] = useSteps({
 
 ```vue
 <script setup lang="ts">
-import { useSteps } from '@vuetkit/components'
+import { useSteps } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Steps] = useSteps({
@@ -106,7 +106,7 @@ Control the active step using v-model.
 
 ```vue
 <script setup lang="ts">
-import { useSteps } from '@vuetkit/components'
+import { useSteps } from '@vuecraft/components'
 
 const [Steps, active] = useSteps({
   steps: [
@@ -148,7 +148,7 @@ function goPrev() {
 ```vue
 <script setup lang="ts">
 import { Check, Circle, Clock } from '@element-plus/icons-vue'
-import { useSteps } from '@vuetkit/components'
+import { useSteps } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Steps] = useSteps({
@@ -183,7 +183,7 @@ const [Steps] = useSteps({
 
 ```vue
 <script setup lang="ts">
-import { useSteps } from '@vuetkit/components'
+import { useSteps } from '@vuecraft/components'
 
 async function fetchSteps() {
   const res = await fetch('/api/steps')
@@ -218,7 +218,7 @@ Pass additional props to the underlying ElSteps component.
 
 ```vue
 <script setup lang="ts">
-import { useSteps } from '@vuetkit/components'
+import { useSteps } from '@vuecraft/components'
 
 const [Steps] = useSteps({
   steps: [

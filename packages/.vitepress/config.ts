@@ -69,10 +69,10 @@ const sidebarRoutes = packagesSidebar.reduce((acc: SidebarRoute, cur) => {
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: 'VueTkit',
+  title: 'VueCraft',
   lang: 'en',
-  base: '/vuetkit/',
-  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/vuetkit/images/logo-small.svg' }]],
+  base: '/vuecraft/',
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/vuecraft/images/logo-small.svg' }]],
   description: 'Collection of business development tools for Vue3 projects',
   srcExclude: ['skill/**'],
   themeConfig: {
@@ -85,10 +85,10 @@ export default defineConfig({
       ...sidebarRoutes,
     },
 
-    socialLinks: [{ icon: 'github', link: 'https://github.com/kalu5/vuetkit' }],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/kalu5/vuecraft' }],
     footer: {
       message: 'Released under the MIT License.',
-      copyright: 'Copyright © 2026-PRESENT Kalu5 and VueTkit contributors',
+      copyright: 'Copyright © 2026-PRESENT Kalu5 and VueCraft contributors',
     },
   },
   rewrites: {

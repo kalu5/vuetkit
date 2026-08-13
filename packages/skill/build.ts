@@ -20,13 +20,13 @@ interface FunctionInfo {
 }
 
 const PACKAGES: PackageConfig[] = [
-  { name: 'shared', display: 'Shared Utilities', npmName: '@vuetkit/shared' },
-  { name: 'core', display: 'Core Composables', npmName: '@vuetkit/core' },
-  { name: 'components', display: 'Composable Components', npmName: '@vuetkit/components' },
+  { name: 'shared', display: 'Shared Utilities', npmName: '@vuecraft/shared' },
+  { name: 'core', display: 'Core Composables', npmName: '@vuecraft/core' },
+  { name: 'components', display: 'Composable Components', npmName: '@vuecraft/components' },
 ]
 
 const ROOT = path.resolve(import.meta.dirname, '..')
-const SKILL_DIR = path.join(import.meta.dirname, 'skills', 'vuetkit-functions')
+const SKILL_DIR = path.join(import.meta.dirname, 'skills', 'vuecraft-functions')
 const REFERENCE_DIR = path.join(SKILL_DIR, 'references')
 const TEMPLATE_PATH = path.join(import.meta.dirname, 'templates', 'skill.md')
 

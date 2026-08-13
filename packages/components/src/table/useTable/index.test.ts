@@ -1,6 +1,6 @@
 import { mount } from '@vue/test-utils'
 
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, ref } from 'vue'
@@ -82,12 +82,12 @@ vi.mock('element-plus', () => ({
   },
 }))
 
-vi.mock('@vuetkit/shared', () => ({
+vi.mock('@vuecraft/shared', () => ({
   isFunc: vi.fn((val: unknown) => typeof val === 'function'),
   realObj: vi.fn((val: unknown) => Object.prototype.toString.call(val) === '[object Object]'),
 }))
 
-vi.mock('@vuetkit/core', () => ({
+vi.mock('@vuecraft/core', () => ({
   useRequest: vi.fn(() => ({
     data: ref([]),
     loading: ref(false),

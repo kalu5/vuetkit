@@ -1,6 +1,6 @@
 import type { ComponentSize, FormRules } from 'element-plus'
 import type { Component, Slots } from 'vue'
-import { isFunc } from '@vuetkit/shared'
+import { isFunc } from '@vuecraft/shared'
 import { ElCascader, ElCheckbox, ElCol, ElColorPicker, ElDatePicker, ElForm, ElFormItem, ElInput, ElInputNumber, ElInputOtp, ElMention, ElRadio, ElRate, ElRow, ElSelect, ElSelectV2, ElSlider, ElSwitch, ElTimePicker, ElTimeSelect, ElTransfer, ElTreeSelect, ElUpload } from 'element-plus'
 import { computed, defineComponent, h, nextTick, onMounted, ref, useTemplateRef } from 'vue'
 
@@ -218,7 +218,7 @@ export function useForm<T extends object>(options?: FormOptions<T>): FormReturnT
      *   prop: 'user.name'
      *   data: {
      *     user: {
-     *       usename: 'vuetkit',
+     *       usename: 'vuecraft',
      *     }
      *   }
      */

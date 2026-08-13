@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 
-import { realObj } from '@vuetkit/shared'
+import { realObj } from '@vuecraft/shared'
 import { onMounted, onUnmounted, ref, shallowRef, toValue } from 'vue'
 
 export interface RequestOptions<T, U> {

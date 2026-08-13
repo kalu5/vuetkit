@@ -1,28 +1,28 @@
 # Get Started
 
-VueTkit is a collect commonly used Composable Utilities, Shared Utilities, and Composable Components in development.
+VueCraft is a collect commonly used Composable Utilities, Shared Utilities, and Composable Components in development.
 
 ## Installation
 
 ```bash
 # npm
-npm install @vuetkit/core
+npm install @vuecraft/core
 
 # yarn
-yarn add @vuetkit/core
+yarn add @vuecraft/core
 
 # pnpm
-pnpm add @vuetkit/core
+pnpm add @vuecraft/core
 
 ```
 
 ## Usage Example
 
-Simply import the function you need from `@vuetkit/core`.
+Simply import the function you need from `@vuecraft/core`.
 
 ```vue
 <script setup lang="ts">
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 import axios from 'axios'
 
 function asyncSevice() {

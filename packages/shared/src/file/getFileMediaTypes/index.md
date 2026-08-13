@@ -24,7 +24,7 @@ Return media object. Description:
 ## Basic Usage
 
 ```ts
-import { getFileMediaTypes } from '@vuetkit/shared'
+import { getFileMediaTypes } from '@vuecraft/shared'
 
 // get file media types
 /**

@@ -12,7 +12,7 @@ Download a file by file blob and file name
 ## Basic Usage
 
 ```ts
-import { downloadFile } from '@vuetkit/shared'
+import { downloadFile } from '@vuecraft/shared'
 
 // download file
 downloadFile(blob, 'fileName')

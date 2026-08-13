@@ -22,7 +22,7 @@ Unified notification prompt.
 ## Basic Usage
 
 ```ts
-import { useNotification } from '@vuetkit/components'
+import { useNotification } from '@vuecraft/components'
 
 const { primary, success, error, warning, info, closeAll } = useNotification()
 
@@ -37,7 +37,7 @@ closeAll()
 ## With Title
 
 ```ts
-import { useNotification } from '@vuetkit/components'
+import { useNotification } from '@vuecraft/components'
 
 const { success } = useNotification()
 
@@ -47,7 +47,7 @@ success('Success message', 'Success Title')
 ## Custom Usage
 
 ```ts
-import { useNotification } from '@vuetkit/components'
+import { useNotification } from '@vuecraft/components'
 
 const { primary, success, error, warning, info, closeAll } = useNotification({
   duration: 5000,

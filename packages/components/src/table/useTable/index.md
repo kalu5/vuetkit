@@ -8,7 +8,7 @@ Quickly create a table component.
 
 ```vue
 <script setup lang="ts">
-import { useTable } from '@vuetkit/components'
+import { useTable } from '@vuecraft/components'
 
 interface User {
   name: string
@@ -70,7 +70,7 @@ function handleDelete(row: User) {
 
 ```vue
 <script setup lang="ts">
-import { useTable } from '@vuetkit/components'
+import { useTable } from '@vuecraft/components'
 
 interface User {
   name: string
@@ -149,7 +149,7 @@ function handleDelete(row: User) {
 
 ```vue
 <script setup lang="ts">
-import { useTable } from '@vuetkit/components'
+import { useTable } from '@vuecraft/components'
 import { reactive } from 'vue'
 
 interface User {
@@ -258,7 +258,7 @@ function handleNextPage() {
 
 ```vue
 <script setup lang="ts">
-import { useTable } from '@vuetkit/components'
+import { useTable } from '@vuecraft/components'
 import { reactive } from 'vue'
 
 interface User {
@@ -347,7 +347,7 @@ Please note that params must be an object when searchFormConfig is required .
 
 ```vue
 <script setup lang="ts">
-import { useTable } from '@vuetkit/components'
+import { useTable } from '@vuecraft/components'
 import { reactive } from 'vue'
 
 interface User {
@@ -442,7 +442,7 @@ const [TableComp] = useTable<User>({
 
 ```vue
 <script setup lang="ts">
-import { useTable } from '@vuetkit/components'
+import { useTable } from '@vuecraft/components'
 
 interface User {
   name: string

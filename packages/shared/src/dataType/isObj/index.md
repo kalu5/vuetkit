@@ -5,7 +5,7 @@ Check variable is object
 ## Basic Usage
 
 ```ts
-import { isObj } from '@vuetkit/shared'
+import { isObj } from '@vuecraft/shared'
 
 // is object
 isObj({}) // true

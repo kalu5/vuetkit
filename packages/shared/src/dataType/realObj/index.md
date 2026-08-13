@@ -5,7 +5,7 @@ Check variable is real object
 ## Basic Usage
 
 ```ts
-import { realObj } from '@vuetkit/shared'
+import { realObj } from '@vuecraft/shared'
 
 // real object
 realObj({}) // true

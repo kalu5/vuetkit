@@ -144,10 +144,10 @@ importers:
 
   packages/components:
     dependencies:
-      '@vuetkit/core':
+      '@vuecraft/core':
         specifier: workspace:*
         version: link:../core
-      '@vuetkit/shared':
+      '@vuecraft/shared':
         specifier: workspace:*
         version: link:../shared
       element-plus:
@@ -159,7 +159,7 @@ importers:
 
   packages/core:
     dependencies:
-      '@vuetkit/shared':
+      '@vuecraft/shared':
         specifier: workspace:*
         version: link:../shared
       vue:

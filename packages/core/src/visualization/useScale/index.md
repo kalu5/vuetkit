@@ -12,7 +12,7 @@ Encapsulates the large-screen scaling solution. The container keeps the design d
 ## Basic Usage
 
 ```ts
-import { useScale } from '@vuetkit/core'
+import { useScale } from '@vuecraft/core'
 
 // call in setup, pass the container selector and design draft size
 useScale('#screen', {
@@ -96,7 +96,7 @@ useScale('#screen', {
 You can call `update` to recompute the scale manually, for example after the container size or layout changes.
 
 ```ts
-import { useScale } from '@vuetkit/core'
+import { useScale } from '@vuecraft/core'
 
 const { scale, update } = useScale('#screen', {
   width: 1920,
@@ -110,7 +110,7 @@ update()
 ### Custom Design Draft Size
 
 ```ts
-import { useScale } from '@vuetkit/core'
+import { useScale } from '@vuecraft/core'
 
 useScale('#screen', {
   width: 2560,

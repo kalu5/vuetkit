@@ -13,7 +13,7 @@ Auto call an asynchronous service to initiate a request and return the request r
 ## Basic Usage
 
 ```ts
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 import axios from 'axios'
 
 interface BaseResponse {
@@ -170,7 +170,7 @@ By default, the request will be called immediately after mounted.
 You can manually execute the request by setting `manual` to `true` and then call `execute` to trigger the request.
 
 ```ts
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 import axios from 'axios'
 import { onMounted } from 'vue'
 
@@ -192,7 +192,7 @@ onMounted(() => {
 You can pass parameters to the request in the options or during manual execution.
 
 ```ts
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 import axios from 'axios'
 import { onMounted } from 'vue'
 
@@ -219,7 +219,7 @@ onMounted(() => {
 You can set the initial data to set the initial data to set.
 
 ```ts
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 
 function asyncServices() {
   return axios.get('/api/base')
@@ -240,7 +240,7 @@ const { data, loading, error, execute } = useRequest(asyncServices, {
 To optimize the user experience, the loading indicator will only be displayed if the request is not completed within 300 milliseconds after it starts. You can manually adjust this according to the specific situation.
 
 ```ts
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 import axios from 'axios'
 
 function asyncServices() {
@@ -257,7 +257,7 @@ const { data, loading, error } = useRequest(asyncServices, {
 You can pass callback functions to the options to be called when the request is successful, fails, or finishes.
 
 ```ts
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 
 function asyncServices() {
   return axios.get('/api/base')
@@ -282,7 +282,7 @@ const { data, loading, error, execute } = useRequest(asyncServices, {
 You can cancel the request manually by calling the `cancel` function.
 
 ```ts
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 
 import axios from 'axios'
 

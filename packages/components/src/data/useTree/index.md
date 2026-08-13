@@ -8,7 +8,7 @@ Quickly define a tree for your data.
 
 ```vue
 <script setup lang="ts">
-import { useTree } from '@vuetkit/components'
+import { useTree } from '@vuecraft/components'
 
 const [Tree] = useTree({
   data: [
@@ -38,7 +38,7 @@ const [Tree] = useTree({
 
 ```vue
 <script setup lang="ts">
-import { useTree } from '@vuetkit/components'
+import { useTree } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Tree] = useTree({
@@ -66,7 +66,7 @@ const [Tree] = useTree({
 
 ```vue
 <script setup lang="ts">
-import { useTree } from '@vuetkit/components'
+import { useTree } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Tree] = useTree({
@@ -89,7 +89,7 @@ const [Tree] = useTree({
 
 ```vue
 <script setup lang="ts">
-import { useTree } from '@vuetkit/components'
+import { useTree } from '@vuecraft/components'
 
 const [Tree] = useTree({
   data: [
@@ -114,7 +114,7 @@ const [Tree] = useTree({
 
 ```vue
 <script setup lang="ts">
-import { useTree } from '@vuetkit/components'
+import { useTree } from '@vuecraft/components'
 
 const [Tree] = useTree({
   showCheckbox: true,
@@ -139,7 +139,7 @@ Use the returned ref to call exposed methods like `filter`, `getCheckedKeys`, et
 
 ```vue
 <script setup lang="ts">
-import { useTree } from '@vuetkit/components'
+import { useTree } from '@vuecraft/components'
 
 const [Tree, treeRef] = useTree({
   showCheckbox: true,
@@ -169,7 +169,7 @@ function logCheckedKeys() {
 
 ```vue
 <script setup lang="ts">
-import { useTree } from '@vuetkit/components'
+import { useTree } from '@vuecraft/components'
 
 async function fetchTree() {
   const res = await fetch('/api/tree')
@@ -200,7 +200,7 @@ Pass additional props to the underlying ElTree component.
 
 ```vue
 <script setup lang="ts">
-import { useTree } from '@vuetkit/components'
+import { useTree } from '@vuecraft/components'
 
 const [Tree] = useTree({
   nodeKey: 'id',

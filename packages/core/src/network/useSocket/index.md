@@ -14,7 +14,7 @@ Manage a WebSocket connection with auto-reconnection, heartbeat, and message-typ
 ## Basic Usage
 
 ```ts
-import { useSocket } from '@vuetkit/core'
+import { useSocket } from '@vuecraft/core'
 
 const { status, data, send, on, connect, disconnect } = useSocket('wss://example.com/ws')
 
@@ -210,7 +210,7 @@ By default, the connection will be opened immediately after mounted.
 You can manually connect by setting `autoConnect` to `false` and then call `connect` to trigger the connection.
 
 ```ts
-import { useSocket } from '@vuetkit/core'
+import { useSocket } from '@vuecraft/core'
 import { onMounted } from 'vue'
 
 const { status, connect } = useSocket('wss://example.com/ws', {
@@ -227,7 +227,7 @@ onMounted(() => {
 The `url` parameter accepts a `string`, a `ref`, or a getter function, so you can build the URL dynamically (e.g. with query params).
 
 ```ts
-import { useSocket } from '@vuetkit/core'
+import { useSocket } from '@vuecraft/core'
 import { ref } from 'vue'
 
 const token = ref('abc')
@@ -240,7 +240,7 @@ const { send } = useSocket(() => `wss://example.com/ws?token=${token.value}`)
 Enable automatic reconnection with custom retry configuration.
 
 ```ts
-import { useSocket } from '@vuetkit/core'
+import { useSocket } from '@vuecraft/core'
 
 const { status } = useSocket('wss://example.com/ws', {
   reconnect: {
@@ -256,7 +256,7 @@ const { status } = useSocket('wss://example.com/ws', {
 Enable heartbeat to keep the connection alive and detect stale connections.
 
 ```ts
-import { useSocket } from '@vuetkit/core'
+import { useSocket } from '@vuecraft/core'
 
 const { send } = useSocket('wss://example.com/ws', {
   heartbeat: {
@@ -273,7 +273,7 @@ const { send } = useSocket('wss://example.com/ws', {
 Use `on` / `off` to subscribe to messages whose `body.type` matches a specific value. This is useful when the server pushes different types of messages over a single connection.
 
 ```ts
-import { useSocket } from '@vuetkit/core'
+import { useSocket } from '@vuecraft/core'
 
 const { on, off } = useSocket('wss://example.com/ws')
 
@@ -292,7 +292,7 @@ off(2, handleUnread)
 You can pass callback functions to the options to be called when the connection opens, closes, errors, or receives a message.
 
 ```ts
-import { useSocket } from '@vuetkit/core'
+import { useSocket } from '@vuecraft/core'
 
 const { data, error, status } = useSocket('wss://example.com/ws', {
   onOpen: () => {
@@ -315,7 +315,7 @@ const { data, error, status } = useSocket('wss://example.com/ws', {
 Send a message to the server. The message will be JSON-serialized if it is an object.
 
 ```ts
-import { useSocket } from '@vuetkit/core'
+import { useSocket } from '@vuecraft/core'
 
 const { send } = useSocket('wss://example.com/ws')
 
@@ -331,7 +331,7 @@ send('raw text')
 You can disconnect manually by calling the `disconnect` function. The connection will also be disconnected automatically on unmount.
 
 ```ts
-import { useSocket } from '@vuetkit/core'
+import { useSocket } from '@vuecraft/core'
 
 const { disconnect } = useSocket('wss://example.com/ws')
 

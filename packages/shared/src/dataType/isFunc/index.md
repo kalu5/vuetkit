@@ -5,7 +5,7 @@ Check variable is function
 ## Basic Usage
 
 ```ts
-import { isFunc } from '@vuetkit/shared'
+import { isFunc } from '@vuecraft/shared'
 
 // is function
 isFunc(() => { }) // true

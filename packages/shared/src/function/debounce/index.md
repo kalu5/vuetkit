@@ -5,7 +5,7 @@ Creates a debounced function that delays invoking `fn` until after `wait` millis
 ## Basic Usage
 
 ```ts
-import { debounce } from '@vuetkit/shared'
+import { debounce } from '@vuecraft/shared'
 
 const debounced = debounce(() => {
   console.log('called')
@@ -23,7 +23,7 @@ debounced()
 The returned function has a `cancel` method to clear the pending invocation.
 
 ```ts
-import { debounce } from '@vuetkit/shared'
+import { debounce } from '@vuecraft/shared'
 
 const debounced = debounce(() => {
   console.log('called')
@@ -38,7 +38,7 @@ debounced.cancel() // pending invocation cleared
 When `wait` is not provided, it defaults to `300` milliseconds.
 
 ```ts
-import { debounce } from '@vuetkit/shared'
+import { debounce } from '@vuecraft/shared'
 
 const debounced = debounce(() => {
   console.log('called')

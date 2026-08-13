@@ -5,7 +5,7 @@ Check variable is array
 ## Basic Usage
 
 ```ts
-import { isArr } from '@vuetkit/shared'
+import { isArr } from '@vuecraft/shared'
 
 // is array
 isArr([]) // true

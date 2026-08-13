@@ -1,6 +1,6 @@
 import type { Ref } from 'vue'
 
-import { debounce } from '@vuetkit/shared'
+import { debounce } from '@vuecraft/shared'
 import { onMounted, onUnmounted, ref } from 'vue'
 
 export interface ScaleOptions {

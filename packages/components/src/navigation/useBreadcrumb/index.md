@@ -8,7 +8,7 @@ Quickly define breadcrumbs to display the location of the current page.
 
 ```vue
 <script setup lang="ts">
-import { useBreadcrumb } from '@vuetkit/components'
+import { useBreadcrumb } from '@vuecraft/components'
 
 const [Breadcrumb] = useBreadcrumb({
   items: [
@@ -33,7 +33,7 @@ Set `separator` to customize the separator character. Its default value is `'/'`
 
 ```vue
 <script setup lang="ts">
-import { useBreadcrumb } from '@vuetkit/components'
+import { useBreadcrumb } from '@vuecraft/components'
 
 const [Breadcrumb] = useBreadcrumb({
   separator: '|',
@@ -60,7 +60,7 @@ Set `separatorIcon` to use an svg icon as the separator, it will cover `separato
 ```vue
 <script setup lang="ts">
 import { ArrowRight } from '@element-plus/icons-vue'
-import { useBreadcrumb } from '@vuetkit/components'
+import { useBreadcrumb } from '@vuecraft/components'
 
 const [Breadcrumb] = useBreadcrumb({
   separatorIcon: ArrowRight,
@@ -86,7 +86,7 @@ Set `replace` to `true` on an item so the navigation will not leave a history re
 
 ```vue
 <script setup lang="ts">
-import { useBreadcrumb } from '@vuetkit/components'
+import { useBreadcrumb } from '@vuecraft/components'
 
 const [Breadcrumb] = useBreadcrumb({
   items: [
@@ -108,7 +108,7 @@ const [Breadcrumb] = useBreadcrumb({
 
 ```vue
 <script setup lang="ts">
-import { useBreadcrumb } from '@vuetkit/components'
+import { useBreadcrumb } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Breadcrumb] = useBreadcrumb({
@@ -138,7 +138,7 @@ Use the `default` slot to fully customize the breadcrumb content.
 
 ```vue
 <script setup lang="ts">
-import { useBreadcrumb } from '@vuetkit/components'
+import { useBreadcrumb } from '@vuecraft/components'
 
 const [Breadcrumb] = useBreadcrumb({
   items: [],
@@ -160,7 +160,7 @@ const [Breadcrumb] = useBreadcrumb({
 
 ```vue
 <script setup lang="ts">
-import { useBreadcrumb } from '@vuetkit/components'
+import { useBreadcrumb } from '@vuecraft/components'
 
 async function fetchBreadcrumbItems() {
   const res = await fetch('/api/breadcrumb-items')
@@ -195,7 +195,7 @@ Pass additional props to the underlying ElBreadcrumb component.
 
 ```vue
 <script setup lang="ts">
-import { useBreadcrumb } from '@vuetkit/components'
+import { useBreadcrumb } from '@vuecraft/components'
 
 const [Breadcrumb] = useBreadcrumb({
   items: [

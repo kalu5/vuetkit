@@ -1,7 +1,7 @@
 {
-  "name": "@vuetkit/components",
+  "name": "@vuecraft/components",
   "type": "module",
-  "version": "0.0.28",
+  "version": "1.0.0",
   "packageManager": "pnpm@10.20.0",
   "description": "Collection of business development components for Vue3 projects",
   "author": "Kalu5",
@@ -25,7 +25,7 @@
     "vue": "catalog:dev"
   },
   "dependencies": {
-    "@vuetkit/core": "workspace:*",
-    "@vuetkit/shared": "workspace:*"
+    "@vuecraft/core": "workspace:*",
+    "@vuecraft/shared": "workspace:*"
   }
 }

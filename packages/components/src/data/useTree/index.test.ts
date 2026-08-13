@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { mount } from '@vue/test-utils'
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { useTree } from './index'
@@ -136,7 +136,7 @@ vi.mock('element-plus', () => {
   }
 })
 
-vi.mock('@vuetkit/core', () => ({
+vi.mock('@vuecraft/core', () => ({
   useRequest: vi.fn(() => ({
     data: ref(null),
     loading: ref(false),

@@ -17,7 +17,7 @@ Quickly create a form with ElementPlus.
 
 ```vue
 <script setup lang="ts">
-import { useForm } from '@vuetkit/components'
+import { useForm } from '@vuecraft/components'
 
 const [FormComp, { validate, getData }] = useForm<{
   username: string
@@ -57,7 +57,7 @@ function submit() {
 
 ```vue
 <script setup lang="ts">
-import { useForm } from '@vuetkit/components'
+import { useForm } from '@vuecraft/components'
 
 const [FormComp, { validate, getData }] = useForm<{
   username: string
@@ -106,7 +106,7 @@ function submit() {
 
 ```vue
 <script setup lang="ts">
-import { useForm } from '@vuetkit/components'
+import { useForm } from '@vuecraft/components'
 
 const [FormComp, { validate, getData }] = useForm<{
   username: string
@@ -170,7 +170,7 @@ function submit() {
 
 ```vue
 <script setup lang="ts">
-import { useForm } from '@vuetkit/components'
+import { useForm } from '@vuecraft/components'
 
 const [FormComp, { validate, getData }] = useForm<{
   username: string
@@ -235,7 +235,7 @@ function submit() {
 
 ```vue
 <script setup lang="ts">
-import { useForm } from '@vuetkit/components'
+import { useForm } from '@vuecraft/components'
 
 const [FormComp, { validate, getData }] = useForm<{
   username: string
@@ -303,7 +303,7 @@ function submit() {
 
 ```vue
 <script setup lang="ts">
-import { useForm } from '@vuetkit/components'
+import { useForm } from '@vuecraft/components'
 import { onMounted } from 'vue'
 
 const [FormComp, { validate, getData, setData }] = useForm<{
@@ -355,7 +355,7 @@ onMounted(() => {
 
 ```vue
 <script setup lang="ts">
-import { useForm } from '@vuetkit/components'
+import { useForm } from '@vuecraft/components'
 import CInput from './components/CInput.vue'
 
 const [FormComp, { validate, getData }] = useForm<{

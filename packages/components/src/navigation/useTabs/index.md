@@ -8,7 +8,7 @@ Quickly define tabs for your navigation.
 
 ```vue
 <script setup lang="ts">
-import { useTabs } from '@vuetkit/components'
+import { useTabs } from '@vuecraft/components'
 
 const [Tabs] = useTabs({
   tabs: [
@@ -39,7 +39,7 @@ const [Tabs] = useTabs({
 
 ```vue
 <script setup lang="ts">
-import { useTabs } from '@vuetkit/components'
+import { useTabs } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Tabs] = useTabs({
@@ -73,7 +73,7 @@ const [Tabs] = useTabs({
 
 ```vue
 <script setup lang="ts">
-import { useTabs } from '@vuetkit/components'
+import { useTabs } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Tabs] = useTabs({
@@ -102,7 +102,7 @@ Control the active tab using v-model.
 
 ```vue
 <script setup lang="ts">
-import { useTabs } from '@vuetkit/components'
+import { useTabs } from '@vuecraft/components'
 
 const [Tabs, activeName] = useTabs({
   tabs: [
@@ -138,7 +138,7 @@ function switchTab(name: string) {
 
 ```vue
 <script setup lang="ts">
-import { useTabs } from '@vuetkit/components'
+import { useTabs } from '@vuecraft/components'
 
 const [Tabs] = useTabs({
   tabs: [
@@ -161,7 +161,7 @@ const [Tabs] = useTabs({
 
 ```vue
 <script setup lang="ts">
-import { useTabs } from '@vuetkit/components'
+import { useTabs } from '@vuecraft/components'
 
 const [Tabs] = useTabs({
   tabs: [
@@ -184,7 +184,7 @@ const [Tabs] = useTabs({
 
 ```vue
 <script setup lang="ts">
-import { useTabs } from '@vuetkit/components'
+import { useTabs } from '@vuecraft/components'
 
 const [Tabs] = useTabs({
   tabs: [
@@ -207,7 +207,7 @@ const [Tabs] = useTabs({
 
 ```vue
 <script setup lang="ts">
-import { useTabs } from '@vuetkit/components'
+import { useTabs } from '@vuecraft/components'
 
 async function fetchTabs() {
   const res = await fetch('/api/tabs')
@@ -242,7 +242,7 @@ Pass additional props to the underlying ElTabs component.
 
 ```vue
 <script setup lang="ts">
-import { useTabs } from '@vuetkit/components'
+import { useTabs } from '@vuecraft/components'
 
 const [Tabs] = useTabs({
   tabs: [

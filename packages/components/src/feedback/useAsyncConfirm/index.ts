@@ -1,6 +1,6 @@
-import type { RequestService } from '@vuetkit/core'
+import type { RequestService } from '@vuecraft/core'
 import type { MessageType } from 'element-plus'
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 import { ElMessageBox } from 'element-plus'
 import { useMessage } from '../useMessage'
 

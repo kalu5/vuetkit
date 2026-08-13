@@ -34,7 +34,7 @@ Unified async confirm hook.
 
 ```vue
 <script setup lang="ts">
-import { useAsyncConfirm } from '@vuetkit/components'
+import { useAsyncConfirm } from '@vuecraft/components'
 import axios from 'axios'
 
 async function deleteItem() {

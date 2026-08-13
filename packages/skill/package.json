@@ -1,9 +1,9 @@
 {
-  "name": "@vuetkit/skill",
+  "name": "@vuecraft/skill",
   "type": "module",
-  "version": "0.0.28",
+  "version": "1.0.0",
   "packageManager": "pnpm@10.20.0",
-  "description": "AI Agent Skills for VueTkit — Vue3 business development tools",
+  "description": "AI Agent Skills for VueCraft — Vue3 business development tools",
   "author": "Kalu5",
   "license": "MIT",
   "keywords": [

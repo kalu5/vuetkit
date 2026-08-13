@@ -27,10 +27,10 @@ export default defineConfig({
   cacheDir: resolve(__dirname, 'node_modules/.vite'),
   resolve: {
     alias: {
-      '@vuetkit/shared': pathToFileURL(
+      '@vuecraft/shared': pathToFileURL(
         resolve(__dirname, 'packages/shared/index.ts'),
       ).href,
-      '@vuetkit': pathToFileURL(resolve(__dirname, 'packages/core/index.ts')).href,
+      '@vuecraft': pathToFileURL(resolve(__dirname, 'packages/core/index.ts')).href,
     },
   },
 })

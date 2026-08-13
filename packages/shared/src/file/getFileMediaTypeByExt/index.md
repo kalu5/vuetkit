@@ -17,7 +17,7 @@ Get file media type by file extension name.
 ## Basic Usage
 
 ```ts
-import { getFileMediaTypeByExt } from '@vuetkit/shared'
+import { getFileMediaTypeByExt } from '@vuecraft/shared'
 
 // get file media type by file extension name
 getFileMediaTypeByExt('doc') // 'application/msword'

@@ -5,7 +5,7 @@ Get variable all data type
 ## Basic Usage
 
 ```ts
-import { getDataType } from '@vuetkit/shared'
+import { getDataType } from '@vuecraft/shared'
 
 // null type
 getDataType(null) // 'null'

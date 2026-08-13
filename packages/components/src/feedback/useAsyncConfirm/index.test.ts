@@ -10,7 +10,7 @@ vi.mock('element-plus', () => {
   return { ElMessageBox: { confirm: confirmImpl } }
 })
 
-vi.mock('@vuetkit/core', () => {
+vi.mock('@vuecraft/core', () => {
   const useRequestImpl = vi.fn()
   return { useRequest: useRequestImpl }
 })
@@ -53,7 +53,7 @@ function runInComponent<T>(setup: () => T): Harness<T> {
 
 describe('useAsyncConfirm', () => {
   it('returns loading ref and confirm function', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const errorRef = { value: undefined as unknown }
     const loadingRef = { value: false }
@@ -66,7 +66,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('calls ElMessageBox.confirm with default options', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -86,7 +86,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('calls ElMessageBox.confirm with custom options', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -113,7 +113,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('executes confirm service with provided params on confirm action', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -152,7 +152,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('executes confirm service with undefined params when no params provided', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -187,7 +187,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('sets confirmButtonLoading to true during async request and false after', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -234,7 +234,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('shows success message and calls confirmSuccess on successful confirm', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const { useMessage } = await import('../useMessage')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
@@ -284,7 +284,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('does not show success message when successMessage is not provided', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const { useMessage } = await import('../useMessage')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
@@ -327,7 +327,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('calls confirmError callback with error object when service fails', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const { useMessage } = await import('../useMessage')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
@@ -377,7 +377,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('shows custom error message when errorMessage is provided and service fails', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const { useMessage } = await import('../useMessage')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
@@ -424,7 +424,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('resets confirmButtonLoading to false even when service fails', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -464,7 +464,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('does not call confirmSuccess when service fails', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -503,7 +503,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('does not call confirmError when service succeeds', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -542,7 +542,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('calls done on cancel action without executing service', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -582,7 +582,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('does not show success or error messages on cancel', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const { useMessage } = await import('../useMessage')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
@@ -636,7 +636,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('exposes loading ref from useRequest', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
 
     const serviceMock = vi.fn().mockResolvedValue('ok')
@@ -649,7 +649,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('works with undefined options (uses all defaults)', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -685,7 +685,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('passes manual: true to useRequest', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
 
     const serviceMock = vi.fn().mockResolvedValue('ok')
@@ -696,7 +696,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('can be called multiple times', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -738,7 +738,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('does not throw when confirmError callback is not provided and service fails', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>
@@ -772,7 +772,7 @@ describe('useAsyncConfirm', () => {
   })
 
   it('does not throw when confirmSuccess callback is not provided and service succeeds', async () => {
-    const { useRequest } = await import('@vuetkit/core')
+    const { useRequest } = await import('@vuecraft/core')
     const { ElMessageBox } = await import('element-plus')
     const useRequestMock = useRequest as unknown as ReturnType<typeof vi.fn>
     const elMessageBoxMock = ElMessageBox.confirm as unknown as ReturnType<typeof vi.fn>

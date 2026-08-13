@@ -1,13 +1,13 @@
 {
-  "name": "vuetkit-skills",
+  "name": "vuecraft-skills",
   "owner": {
     "name": "Kalu5",
     "url": "https://github.com/kalu5"
   },
   "skills": [
     {
-      "name": "vuetkit-functions",
-      "description": "VueTkit composables and utilities for Vue3 business development"
+      "name": "vuecraft-functions",
+      "description": "VueCraft composables and utilities for Vue3 business development"
     }
   ]
 }

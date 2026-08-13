@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { mount } from '@vue/test-utils'
-import { useRequest } from '@vuetkit/core'
+import { useRequest } from '@vuecraft/core'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, ref } from 'vue'
 import { useDescriptions } from './index'
@@ -52,7 +52,7 @@ vi.mock('element-plus', () => ({
   },
 }))
 
-vi.mock('@vuetkit/core', () => ({
+vi.mock('@vuecraft/core', () => ({
   useRequest: vi.fn(() => ({
     data: ref(null),
     loading: ref(false),
@@ -82,7 +82,7 @@ describe('useDescriptions', () => {
   it('renders basic columns with label and value', () => {
     const [DescriptionsComp] = useDescriptions({
       columns: [
-        { label: 'Name', value: 'vuetkit' },
+        { label: 'Name', value: 'vuecraft' },
         { label: 'Age', value: '25' },
       ],
     })
@@ -91,7 +91,7 @@ describe('useDescriptions', () => {
     expect(items.length).toBe(2)
     expect(items[0].attributes('data-label')).toBe('Name')
     expect(items[1].attributes('data-label')).toBe('Age')
-    expect(items[0].find('.el-descriptions-item__content').text()).toBe('vuetkit')
+    expect(items[0].find('.el-descriptions-item__content').text()).toBe('vuecraft')
     expect(items[1].find('.el-descriptions-item__content').text()).toBe('25')
   })
 

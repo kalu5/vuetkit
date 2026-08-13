@@ -8,7 +8,7 @@ Quickly define navigation menus for your website.
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 
 const [Menu] = useMenu({
   items: [
@@ -31,7 +31,7 @@ Set `mode` to `horizontal` for a top bar menu.
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 
 const [Menu] = useMenu({
   mode: 'horizontal',
@@ -56,7 +56,7 @@ Use `children` to create a sub-menu with nested items.
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 
 const [Menu] = useMenu({
   items: [
@@ -89,7 +89,7 @@ Sub-menus can be nested to create multi-level menus.
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 
 const [Menu] = useMenu({
   items: [
@@ -128,7 +128,7 @@ The returned `activeIndex` ref tracks the selected menu item, and the `onSelect`
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 
 const [Menu, activeIndex] = useMenu({
   defaultActive: '1',
@@ -156,7 +156,7 @@ const [Menu, activeIndex] = useMenu({
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 
 const [Menu] = useMenu({
   items: [
@@ -189,7 +189,7 @@ const [Menu] = useMenu({
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Menu] = useMenu({
@@ -218,7 +218,7 @@ Use `renderTitle` to customize the sub-menu title content.
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Menu] = useMenu({
@@ -250,7 +250,7 @@ Use `groupTitle` with `children` to render as a MenuItemGroup.
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 
 const [Menu] = useMenu({
   items: [
@@ -279,7 +279,7 @@ Set `collapse` to `true` for a collapsed sidebar menu (vertical mode only).
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 
 const [Menu] = useMenu({
   collapse: true,
@@ -310,7 +310,7 @@ Use the `default` slot to fully customize the menu content.
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 import { h } from 'vue'
 
 const [Menu] = useMenu({
@@ -333,7 +333,7 @@ const [Menu] = useMenu({
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 
 async function fetchMenuItems() {
   const res = await fetch('/api/menu-items')
@@ -369,7 +369,7 @@ Pass additional props to the underlying ElMenu component.
 
 ```vue
 <script setup lang="ts">
-import { useMenu } from '@vuetkit/components'
+import { useMenu } from '@vuecraft/components'
 
 const [Menu] = useMenu({
   items: [

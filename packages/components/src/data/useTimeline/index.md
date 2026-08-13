@@ -8,7 +8,7 @@ Quickly define timeline for your data.
 
 ```vue
 <script setup lang="ts">
-import { useTimeline } from '@vuetkit/components'
+import { useTimeline } from '@vuecraft/components'
 
 const [Timeline] = useTimeline({
   columns: [
@@ -39,7 +39,7 @@ const [Timeline] = useTimeline({
 
 ```vue
 <script setup lang="ts">
-import { useTimeline } from '@vuetkit/components'
+import { useTimeline } from '@vuecraft/components'
 
 const [Timeline] = useTimeline({
   columns: [

@@ -1,97 +1,64 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 230 72" fill="none">
   <defs>
-    <!-- blue → cyan brand gradient -->
-    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#3b82f6"/>
-      <stop offset="0.5" stop-color="#22d3ee"/>
+    <!-- VitePress brand: electric blue → cyan -->
+    <linearGradient id="brand" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0" stop-color="#2563eb"/>
+      <stop offset="0.5" stop-color="#3b82f6"/>
       <stop offset="1" stop-color="#06b6d4"/>
     </linearGradient>
-    <!-- soft radial glow behind mark -->
+    <linearGradient id="mid" x1="0" y1="0" x2="1" y2="0.3">
+      <stop offset="0" stop-color="#1e3a8a"/>
+      <stop offset="1" stop-color="#0e7490"/>
+    </linearGradient>
+    <linearGradient id="shadow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d1117"/>
+      <stop offset="1" stop-color="#1a2733"/>
+    </linearGradient>
+    <linearGradient id="bright" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#67e8f9"/>
+      <stop offset="1" stop-color="#a5f3fc"/>
+    </linearGradient>
     <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.22"/>
-      <stop offset="0.6" stop-color="#22d3ee" stop-opacity="0.05"/>
-      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+      <stop offset="0" stop-color="#3b82f6" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#3b82f6" stop-opacity="0"/>
     </radialGradient>
-    <!-- node glow -->
-    <radialGradient id="nodeGlow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#7dd3fc" stop-opacity="0.9"/>
-      <stop offset="1" stop-color="#7dd3fc" stop-opacity="0"/>
-    </radialGradient>
-    <!-- gear tooth reusable shape -->
-    <rect id="tooth" x="-5" y="-72" width="10" height="20" rx="3" fill="url(#brand)"/>
+    <!-- signature wipe — left-to-right reveal -->
+    <clipPath id="wipe">
+      <rect x="0" y="0" width="0" height="72">
+        <animate attributeName="width" from="0" to="230" dur="2.5s" fill="freeze"/>
+      </rect>
+    </clipPath>
   </defs>
 
   <!-- ambient glow -->
-  <circle cx="128" cy="128" r="108" fill="url(#glow)">
-    <animate attributeName="r" values="100;116;100" dur="4s" repeatCount="indefinite"/>
-    <animate attributeName="opacity" values="0.8;1;0.8" dur="4s" repeatCount="indefinite"/>
-  </circle>
+  <ellipse cx="115" cy="36" rx="108" ry="32" fill="url(#glow)">
+    <animate attributeName="opacity" values="0.5;0.9;0.5" dur="4s" repeatCount="indefinite"/>
+  </ellipse>
 
-  <!-- outer rotating hex ring (dashed) — tech frame -->
-  <g>
-    <polygon points="128,28 215,78 215,178 128,228 41,178 41,78"
-      stroke="url(#brand)" stroke-width="3" stroke-dasharray="10 8"
-      stroke-linejoin="round" fill="none" opacity="0.8">
-      <animateTransform attributeName="transform" type="rotate"
-        from="0 128 128" to="360 128 128" dur="28s" repeatCount="indefinite"/>
-    </polygon>
-  </g>
+  <!-- shadow extrusion -->
+  <text x="119" y="65" font-family="'Inter','Segoe UI',system-ui,sans-serif"
+    font-size="80" font-weight="800" text-anchor="middle"
+    fill="url(#shadow)" opacity="0.45" clip-path="url(#wipe)">Craft</text>
 
-  <!-- gear — toolkit signal (counter-rotating) -->
-  <g>
-    <circle cx="128" cy="128" r="58" fill="none" stroke="url(#brand)" stroke-width="3" opacity="0.75"/>
-    <use href="#tooth" transform="translate(128 128)"/>
-    <use href="#tooth" transform="translate(128 128) rotate(30)"/>
-    <use href="#tooth" transform="translate(128 128) rotate(60)"/>
-    <use href="#tooth" transform="translate(128 128) rotate(90)"/>
-    <use href="#tooth" transform="translate(128 128) rotate(120)"/>
-    <use href="#tooth" transform="translate(128 128) rotate(150)"/>
-    <use href="#tooth" transform="translate(128 128) rotate(180)"/>
-    <use href="#tooth" transform="translate(128 128) rotate(210)"/>
-    <use href="#tooth" transform="translate(128 128) rotate(240)"/>
-    <use href="#tooth" transform="translate(128 128) rotate(270)"/>
-    <use href="#tooth" transform="translate(128 128) rotate(300)"/>
-    <use href="#tooth" transform="translate(128 128) rotate(330)"/>
-    <animateTransform attributeName="transform" type="rotate"
-      from="360 128 128" to="0 128 128" dur="24s" repeatCount="indefinite"/>
-  </g>
+  <!-- mid-depth layer -->
+  <text x="117" y="64" font-family="'Inter','Segoe UI',system-ui,sans-serif"
+    font-size="80" font-weight="800" text-anchor="middle"
+    fill="url(#mid)" clip-path="url(#wipe)">Craft</text>
 
-  <!-- central V chevron monogram — Vue signal -->
-  <path d="M88 96 L128 172 L168 96"
-    stroke="url(#brand)" stroke-width="11"
-    stroke-linecap="round" stroke-linejoin="round" fill="none">
-    <animate attributeName="stroke-width" values="11;13;11" dur="3.5s" repeatCount="indefinite"/>
-  </path>
+  <!-- main gradient face -->
+  <text x="115" y="62" font-family="'Inter','Segoe UI',system-ui,sans-serif"
+    font-size="80" font-weight="800" text-anchor="middle"
+    fill="url(#brand)" clip-path="url(#wipe)">Craft</text>
 
-  <!-- pulsing circuit nodes at outer hex vertices -->
-  <g fill="url(#nodeGlow)">
-    <circle cx="128" cy="28" r="9">
-      <animate attributeName="opacity" values="0.4;1;0.4" dur="2.4s" repeatCount="indefinite"/>
-    </circle>
-    <circle cx="215" cy="78" r="9">
-      <animate attributeName="opacity" values="1;0.4;1" dur="2.4s" begin="0.4s" repeatCount="indefinite"/>
-    </circle>
-    <circle cx="215" cy="178" r="9">
-      <animate attributeName="opacity" values="0.4;1;0.4" dur="2.4s" begin="0.8s" repeatCount="indefinite"/>
-    </circle>
-    <circle cx="128" cy="228" r="9">
-      <animate attributeName="opacity" values="1;0.4;1" dur="2.4s" begin="1.2s" repeatCount="indefinite"/>
-    </circle>
-    <circle cx="41" cy="178" r="9">
-      <animate attributeName="opacity" values="0.4;1;0.4" dur="2.4s" begin="1.6s" repeatCount="indefinite"/>
-    </circle>
-    <circle cx="41" cy="78" r="9">
-      <animate attributeName="opacity" values="1;0.4;1" dur="2.4s" begin="2s" repeatCount="indefinite"/>
-    </circle>
-  </g>
+  <!-- bright bevel highlight -->
+  <text x="115" y="62" font-family="'Inter','Segoe UI',system-ui,sans-serif"
+    font-size="80" font-weight="800" text-anchor="middle"
+    fill="none" stroke="url(#bright)" stroke-width="1"
+    opacity="0.6" clip-path="url(#wipe)">Craft</text>
 
-  <!-- bright node cores -->
-  <g fill="#e0f7ff">
-    <circle cx="128" cy="28" r="3.2"/>
-    <circle cx="215" cy="78" r="3.2"/>
-    <circle cx="215" cy="178" r="3.2"/>
-    <circle cx="128" cy="228" r="3.2"/>
-    <circle cx="41" cy="178" r="3.2"/>
-    <circle cx="41" cy="78" r="3.2"/>
-  </g>
+  <!-- pen tip — sweeps with the writing -->
+  <rect x="0" y="12" width="6" height="50" rx="2" fill="url(#bright)" opacity="0">
+    <animate attributeName="opacity" values="0;0.9;0.9;0" keyTimes="0;0.05;0.92;1" dur="2.5s" fill="freeze"/>
+    <animate attributeName="x" from="0" to="224" dur="2.5s" fill="freeze"/>
+  </rect>
 </svg>

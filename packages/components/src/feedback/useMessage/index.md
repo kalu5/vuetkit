@@ -21,7 +21,7 @@ Unified message prompt.
 ## Basic Usage
 
 ```ts
-import { useMessage } from '@vuetkit/components'
+import { useMessage } from '@vuecraft/components'
 
 const { success, error, warning, info, closeAll } = useMessage()
 
@@ -35,7 +35,7 @@ closeAll()
 ## Custom Usage
 
 ```ts
-import { useMessage } from '@vuetkit/components'
+import { useMessage } from '@vuecraft/components'
 
 const { success, error, warning, info, closeAll } = useMessage({
   duration: 5000,
