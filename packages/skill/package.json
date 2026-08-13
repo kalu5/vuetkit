@@ -1,0 +1,25 @@
+{
+  "name": "@vuetkit/skill",
+  "type": "module",
+  "version": "0.0.28",
+  "packageManager": "pnpm@10.20.0",
+  "description": "AI Agent Skills for VueTkit — Vue3 business development tools",
+  "author": "Kalu5",
+  "license": "MIT",
+  "keywords": [
+    "vue3",
+    "ai",
+    "skills",
+    "agent"
+  ],
+  "files": [
+    "skills"
+  ],
+  "scripts": {
+    "build": "tsx build.ts"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:types",
+    "tsx": "catalog:dev"
+  }
+}

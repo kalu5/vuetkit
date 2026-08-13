@@ -1,0 +1,13 @@
+{
+  "name": "vuetkit-skills",
+  "owner": {
+    "name": "Kalu5",
+    "url": "https://github.com/kalu5"
+  },
+  "skills": [
+    {
+      "name": "vuetkit-functions",
+      "description": "VueTkit composables and utilities for Vue3 business development"
+    }
+  ]
+}

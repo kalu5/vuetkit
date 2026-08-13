@@ -9,6 +9,7 @@ cache
 
 node_modules
 coverage
-skills
+
+vue-test
 
 
