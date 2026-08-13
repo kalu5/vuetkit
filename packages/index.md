@@ -6,7 +6,7 @@ hero:
   name: "VueTkit"
   text: "Collection of business development tools for Vue3 projects"
   tagline: "Collect commonly used Composable Utilities, Shared Utilities, and Composable Components in development."
-  image: "/images/logo-large.png"
+  image: "/images/logo-tech.svg"
   actions:
     - theme: brand
       text: Get Started

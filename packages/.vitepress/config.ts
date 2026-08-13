@@ -72,11 +72,11 @@ export default defineConfig({
   title: 'VueTkit',
   lang: 'en',
   base: '/vuetkit/',
-  head: [['link', { rel: 'icon', href: '/vuetkit/images/logo-small.png' }]],
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/vuetkit/images/logo-small.svg' }]],
   description: 'Collection of business development tools for Vue3 projects',
   srcExclude: ['skill/**'],
   themeConfig: {
-    logo: '/images/logo-small.png',
+    logo: '/images/logo-small.svg',
     // https://vitepress.dev/reference/default-theme-config
     nav: [],
 
