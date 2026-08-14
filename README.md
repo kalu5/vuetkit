@@ -3,7 +3,10 @@
   <img src="https://raw.githubusercontent.com/kalu5/vuecraft/main/packages/public/images/logo-tech.svg" alt="VueCraft - Collection of business development tools for Vue3 projects" width="300">
 </a>
 <br>
-Collect commonly used Composable Utilities, Shared Utilities, and Composable Components in development.
+<p align="center" style="font-size: 32px;">VueCraft</p>
+<br>
+<p align="center">
+  Collect commonly used Composable Utilities, Shared Utilities, and Composable Components in development.
 </p>
 
 <p align="center">
