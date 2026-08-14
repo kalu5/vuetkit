@@ -12,22 +12,6 @@ package: @vuecraft/core
 Support download by search criteria or by selecting multiple columns.
 :::
 
-## Parameters
-
-| Parameter       | Type     | Description              |
-| --------------- | -------- | ------------------------ |
-| downloadService | function | Async download function. |
-| fileName        | string   | File name.               |
-
-## Returns
-
-| Return                | Type                        | Description                 |
-| --------------------- | --------------------------- | --------------------------- |
-| loading               | Ref\<boolean\>              | Download loading status.    |
-| executeDownload       | (params: any) => void       | Execute download operation. |
-| downloadColumns       | Ref\<number[]\>             | Download columns.           |
-| changeDownloadColumns | (columns: number[]) => void | Change download columns.    |
-
 ## Basic Usage
 
 ```vue
@@ -115,6 +99,32 @@ function handleSelectChange(columns: any[]) {
   />
 </template>
 ```
+
+## Declaration Types
+
+```typescript
+function useAsyncDownloadFile<T extends Blob>(
+  downloadService: RequestService<T>,
+  fileName: string,
+): AsyncDownloadFileReturn
+```
+
+### AsyncDownloadFileReturn
+
+```typescript
+interface AsyncDownloadFileReturn {
+  // download loading status
+  loading: Ref<boolean>
+  // execute download operation
+  executeDownload: (params?: any) => void
+  // download columns
+  downloadColumns: Ref<number[]>
+  // change download columns
+  changeDownloadColumns: (columns: number[]) => void
+}
+```
+
+> `RequestService` is re-exported from `useRequest`, see [useRequest](../network/useRequest/) for its declaration.
 
 ## Type Declarations
 

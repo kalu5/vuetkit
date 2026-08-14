@@ -34,66 +34,6 @@ useScale('#screen', {
 </template>
 ```
 
-## Options
-
-<table>
-  <thead>
-   <tr>
-    <th>Option</th>
-    <th>Type</th>
-    <th>Default</th>
-    <th>Description</th>
-  </tr>
-  </thead>
-  <tbody>
-
-  <tr>
-    <td>width</td>
-    <td>number</td>
-    <td>1920</td>
-    <td>
-      The design draft width.
-    </td>
-  </tr>
-  <tr>
-    <td>height</td>
-    <td>number</td>
-    <td>1080</td>
-    <td>
-      The design draft height.
-    </td>
-  </tr>
-  </tbody>
-</table>
-
-## Return Value
-
-<table>
-  <thead>
-   <tr>
-    <th>Name</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td>scale</td>
-    <td>number</td>
-    <td>
-      The current scale ratio.
-    </td>
-  </tr>
-  <tr>
-    <td>update</td>
-    <td>function</td>
-    <td>
-      The function to recompute the scale manually.
-    </td>
-  </tr>
-  </tbody>
-</table>
-
 ## More Example
 
 ### Manual Update
@@ -121,6 +61,30 @@ useScale('#screen', {
   width: 2560,
   height: 1440,
 })
+```
+
+## Declaration Types
+
+### ScaleOptions
+
+```typescript
+interface ScaleOptions {
+  // design draft width (default: 1920)
+  width?: number
+  // design draft height (default: 1080)
+  height?: number
+}
+```
+
+### ScaleReturn
+
+```typescript
+interface ScaleReturn {
+  // current scale ratio
+  scale: Ref<number>
+  // recompute scale manually
+  update: () => void
+}
 ```
 
 ## Type Declarations

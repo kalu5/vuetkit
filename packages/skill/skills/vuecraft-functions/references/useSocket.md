@@ -29,184 +29,6 @@ on(2, (msg) => {
 })
 ```
 
-## Options
-
-<table>
-  <thead>
-   <tr>
-    <th>Option</th>
-    <th>Type</th>
-    <th>Default</th>
-    <th>Description</th>
-  </tr>
-  </thead>
-  <tbody>
-
-  <tr>
-    <td>autoConnect</td>
-    <td>boolean</td>
-    <td>true</td>
-    <td>
-      Default auto connect to the WebSocket server immediately after mounted. You can set it to `false` to manually connect via the `connect` function.
-    </td>
-  </tr>
-
-  <tr>
-    <td>protocols</td>
-    <td>string | string[]</td>
-    <td>undefined</td>
-    <td>
-      The WebSocket sub-protocols to use when opening the connection.
-    </td>
-  </tr>
-
-  <tr>
-    <td>reconnect</td>
-    <td>object</td>
-    <td>undefined</td>
-    <td>
-      <p>Reconnection configuration. When provided, the client will automatically retry on connection failure.</p>
-      <p>- <code>maxRetries</code>: max retry count (default: <code>3</code>).</p>
-      <p>- <code>retryInterval</code>: retry interval in ms (default: <code>3000</code>).</p>
-      <p>- <code>exponentialBackoff</code>: whether to use exponential backoff (default: <code>true</code>).</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>heartbeat</td>
-    <td>object</td>
-    <td>undefined</td>
-    <td>
-      <p>Heartbeat configuration. When provided, the client will periodically send ping messages and detect timeout.</p>
-      <p>- <code>interval</code>: heartbeat interval in ms (default: <code>30000</code>).</p>
-      <p>- <code>timeout</code>: heartbeat timeout in ms (default: <code>5000</code>).</p>
-      <p>- <code>pingMessage</code>: ping message content.</p>
-      <p>- <code>pongMessage</code>: pong message content used to match heartbeat response.</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>onOpen</td>
-    <td>function</td>
-    <td>undefined</td>
-    <td>
-      The callback function to call when the connection opens.
-    </td>
-  </tr>
-
-  <tr>
-    <td>onClose</td>
-    <td>function</td>
-    <td>undefined</td>
-    <td>
-      The callback function to call when the connection closes.
-    </td>
-  </tr>
-
-  <tr>
-    <td>onError</td>
-    <td>function</td>
-    <td>undefined</td>
-    <td>
-      The callback function to call when an error occurs.
-    </td>
-  </tr>
-
-  <tr>
-    <td>onMessage</td>
-    <td>function</td>
-    <td>undefined</td>
-    <td>
-      The callback function to call when a message is received. All non-heartbeat messages trigger this callback.
-    </td>
-  </tr>
-  </tbody>
-</table>
-
-## Return Value
-
-<table>
-  <thead>
-   <tr>
-    <th>Name</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td>client</td>
-    <td>Ref&lt;WebSocketClient | null&gt;</td>
-    <td>
-      The underlying WebSocket client instance.
-    </td>
-  </tr>
-  <tr>
-    <td>status</td>
-    <td>Ref&lt;SocketStatus&gt;</td>
-    <td>
-      The current connection status. One of <code>CONNECTING</code>, <code>OPEN</code>, <code>CLOSING</code>, <code>CLOSED</code>.
-    </td>
-  </tr>
-  <tr>
-    <td>data</td>
-    <td>Ref&lt;any&gt;</td>
-    <td>
-      The latest received message.
-    </td>
-  </tr>
-  <tr>
-    <td>error</td>
-    <td>Ref&lt;unknown&gt;</td>
-    <td>
-      The latest error.
-    </td>
-  </tr>
-  <tr>
-    <td>connect</td>
-    <td>function</td>
-    <td>
-      The function to connect to the WebSocket server manually.
-    </td>
-  </tr>
-  <tr>
-    <td>disconnect</td>
-    <td>function</td>
-    <td>
-      The function to disconnect from the WebSocket server.
-    </td>
-  </tr>
-  <tr>
-    <td>reconnect</td>
-    <td>function</td>
-    <td>
-      The function to reconnect to the WebSocket server.
-    </td>
-  </tr>
-  <tr>
-    <td>send</td>
-    <td>function</td>
-    <td>
-      The function to send a message to the server.
-    </td>
-  </tr>
-  <tr>
-    <td>on</td>
-    <td>function</td>
-    <td>
-      Subscribe to messages of a specific <code>body.type</code>.
-    </td>
-  </tr>
-  <tr>
-    <td>off</td>
-    <td>function</td>
-    <td>
-      Unsubscribe from messages of a specific <code>body.type</code>.
-    </td>
-  </tr>
-  </tbody>
-</table>
-
 ## More Example
 
 ### Manual Connect
@@ -341,6 +163,97 @@ import { useSocket } from '@vuecraft/core'
 const { disconnect } = useSocket('wss://example.com/ws')
 
 disconnect()
+```
+
+## Declaration Types
+
+### SocketStatus
+
+```typescript
+enum SocketStatus {
+  CONNECTING = 0,
+  OPEN = 1,
+  CLOSING = 2,
+  CLOSED = 3,
+}
+```
+
+### SocketOptions
+
+```typescript
+interface SocketOptions {
+  // whether to connect automatically on mount (default: true)
+  autoConnect?: boolean
+  // WebSocket sub-protocols
+  protocols?: string | string[]
+  // reconnect configuration
+  reconnect?: SocketReconnectOptions
+  // heartbeat configuration
+  heartbeat?: SocketHeartbeatOptions
+  // called when the connection opens
+  onOpen?: () => void
+  // called when the connection closes
+  onClose?: () => void
+  // called when an error occurs
+  onError?: (error: any) => void
+  // called when a message is received
+  onMessage?: (data: any) => void
+}
+```
+
+### SocketReconnectOptions
+
+```typescript
+interface SocketReconnectOptions {
+  // max retry count (default: 3)
+  maxRetries?: number
+  // retry interval in ms (default: 3000)
+  retryInterval?: number
+  // whether to use exponential backoff (default: true)
+  exponentialBackoff?: boolean
+}
+```
+
+### SocketHeartbeatOptions
+
+```typescript
+interface SocketHeartbeatOptions {
+  // heartbeat interval in ms (default: 30000)
+  interval?: number
+  // heartbeat timeout in ms (default: 5000)
+  timeout?: number
+  // ping message content
+  pingMessage?: string | Record<string, any>
+  // pong message content (used to match heartbeat response)
+  pongMessage?: Record<string, any>
+}
+```
+
+### SocketReturn
+
+```typescript
+interface SocketReturn {
+  // underlying WebSocket client instance
+  client: Ref<WebSocketClient | null>
+  // current connection status
+  status: Ref<SocketStatus>
+  // latest received message
+  data: Ref<any>
+  // latest error
+  error: Ref<unknown>
+  // connect to the WebSocket server
+  connect: () => void
+  // disconnect from the WebSocket server
+  disconnect: () => void
+  // reconnect to the WebSocket server
+  reconnect: () => void
+  // send a message to the server
+  send: (data: string | object) => void
+  // subscribe to messages of a specific body.type
+  on: (type: number, callback: EventCallback) => void
+  // unsubscribe from messages of a specific body.type
+  off: (type: number, callback: EventCallback) => void
+}
 ```
 
 ## Type Declarations

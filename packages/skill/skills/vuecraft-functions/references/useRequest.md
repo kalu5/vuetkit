@@ -32,141 +32,6 @@ function asyncServices() {
 const { data, loading, error } = <BaseResponse>useRequest(asyncServices)
 ```
 
-## Options
-
-<table>
-  <thead>
-   <tr>
-    <th>Option</th>
-    <th>Type</th>
-    <th>Default</th>
-    <th>Description</th>
-  </tr>
-  </thead>
-  <tbody>
- 
-  <tr>
-    <td>manual</td>
-    <td>boolean</td>
-    <td>false</td>
-    <td>
-      Default auto call the request immediately after mounted. You can set it to `true` to manually execute the request.
-    </td>
-  </tr>
-  <tr>
-    <td>defaultParams</td>
-    <td>any</td>
-    <td>undefined</td>
-    <td>
-      <p>1. The request default params. </p>
-      <p>2. You can also replace the default parameters by passing parameters when executing the execute function.</p>
-      <p>3. If you pass params is obj in both the options and execute, we will merge them .</p>
-    </td>
-  </tr>
-
-  <tr>
-    <td>initialData</td>
-    <td>T</td>
-    <td>undefined</td>
-    <td>
-      The initial data to set.
-    </td>
-  </tr>
-
-  <tr>
-    <td>delayLoadingTime</td>
-    <td>number</td>
-    <td>300</td>
-    <td>
-      To optimize the user experience, the loading indicator will only be displayed if the request is not completed within 300 milliseconds after it starts. You can manually adjust this according to the specific situation.
-    </td>
-  </tr>
-  <tr>
-    <td>formatData</td>
-    <td>function</td>
-    <td>undefined</td>
-    <td>
-      The function to format the data before setting it to the data ref.
-    </td>
-  </tr>
-  <tr>
-    <td>onSuccess</td>
-    <td>function</td>
-    <td>undefined</td>
-    <td>
-      <p>1. The callback function to call when the request is successful. </p>
-      <p>2. You can do other operations.</p>
-    </td>
-  </tr>
-  <tr>
-    <td>onError</td>
-    <td>function</td>
-    <td>undefined</td>
-    <td>
-      <p>1. The callback function to call when the request fails. </p>
-      <p>2. You can handle the error in the callback function.</p>
-    </td>
-  </tr>
-  <tr>
-    <td>onFinally</td>
-    <td>function</td>
-    <td>undefined</td>
-    <td>
-      The callback function to call when the request is completed. 
-    </td>
-  </tr>
-  </tbody>
-</table>
-
-## Return Value
-
-<table>
-  <thead>
-   <tr>
-    <th>Name</th>
-    <th>Type</th>
-    <th>Description</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr>
-    <td>data</td>
-    <td>T</td>
-    <td>
-      The request data.
-    </td>
-  </tr>
-  <tr>
-    <td>loading</td>
-    <td>boolean</td>
-    <td>
-      The loading state.
-    </td>
-  </tr>
-  <tr>
-    <td>error</td>
-    <td>Error</td>
-    <td>
-      The error state.
-    </td>
-  </tr>
-  <tr>
-    <td>execute</td>
-    <td>function</td>
-    <td>
-      The function to execute the request manually.
-    </td>
-  </tr>
-  <tr>
-    <td>cancel</td>
-    <td>function</td>
-    <td>
-      Call this function to discard the request data.
-    </td>
-  </tr>
-  </tbody>
-</table>
-
 ## More Example
 
 ### Manual
@@ -306,6 +171,53 @@ onMounted(() => {
   }, 1000)
 })
 ```
+
+## Declaration Types
+
+### RequestOptions
+
+```typescript
+interface RequestOptions<T, U> {
+  // whether to execute the request immediately (default: false)
+  manual?: boolean
+  // default params for the request
+  defaultParams?: any
+  // initial data for the request
+  initialData?: T
+  // delay loading time in ms (default: 300)
+  delayLoadingTime?: number
+  // format data before set to data ref
+  formatData?: (data: U) => T
+  // success callback
+  onSuccess?: (data: T) => void
+  // error callback
+  onError?: (error: any) => void
+  // finally callback
+  onFinally?: () => void
+}
+```
+
+### RequestReturn
+
+```typescript
+interface RequestReturn<T> {
+  loading: Ref<boolean>
+  data: Ref<T | null>
+  error: Ref<unknown>
+  // manual execute the request
+  execute: (params?: any) => void
+  // cancel the request
+  cancel: () => void
+}
+```
+
+### RequestService
+
+```typescript
+type RequestService<U> = (params?: any) => Promise<U>
+```
+
+> `useRequest<T, U = T>` — `T` is the type returned by the request or `formatData`; `U` is the raw type returned by the request service (defaults to `T`).
 
 ## Type Declarations
 
