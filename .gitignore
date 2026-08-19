@@ -5,6 +5,7 @@
 
 dist
 cache
+.temp
 .eslintcache
 
 node_modules
