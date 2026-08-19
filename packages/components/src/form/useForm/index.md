@@ -296,6 +296,52 @@ function submit() {
 </template>
 ```
 
+## Collapse
+
+```vue
+<script setup lang="ts">
+import { useForm } from '@vuecraft/components'
+
+const [FormComp, { validate, getData }] = useForm<{
+  username: string
+  password: string
+  email: string
+  phone: string
+}>({
+  schemas: [
+    { prop: 'username', label: 'username', type: 'input' },
+    { prop: 'password', label: 'password', type: 'input' },
+    { prop: 'email', label: 'email', type: 'input' },
+    { prop: 'phone', label: 'phone', type: 'input' },
+  ],
+  colSpan: 12,
+  collapsible: true,
+  expandText: 'Expand',
+  collapseText: 'Collapse',
+})
+
+function submit() {
+  validate((data) => {
+    console.log(data)
+    const postData = getData()
+    console.log(postData)
+  })
+}
+</script>
+
+<template>
+  <div>
+    <FormComp>
+      <template #footer>
+        <button @click.stop.prevent="submit">
+          Submit
+        </button>
+      </template>
+    </FormComp>
+  </div>
+</template>
+```
+
 ## Change Form Data
 
 - setting default data
@@ -407,6 +453,12 @@ interface FormOptions<T> {
   'defaultData'?: T
   // Inline form
   'inline'?: boolean
+  // Whether to enable collapse. When true, the form collapses to one row by default and an expand/collapse trigger is rendered inline with the footer.
+  'collapsible'?: boolean
+  // Expand trigger text, shown when the form is collapsed. Default 'Expand'.
+  'expandText'?: string
+  // Collapse trigger text, shown when the form is expanded. Default 'Collapse'.
+  'collapseText'?: string
   // The width occupied by each column
   'colSpan'?: number
   // Form size

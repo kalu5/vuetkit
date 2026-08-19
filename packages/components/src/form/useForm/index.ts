@@ -1,7 +1,7 @@
 import type { ComponentSize, FormRules } from 'element-plus'
 import type { Component, Slots } from 'vue'
 import { isFunc } from '@vuecraft/shared'
-import { ElCascader, ElCheckbox, ElCol, ElColorPicker, ElDatePicker, ElForm, ElFormItem, ElInput, ElInputNumber, ElInputOtp, ElMention, ElRadio, ElRate, ElRow, ElSelect, ElSelectV2, ElSlider, ElSwitch, ElTimePicker, ElTimeSelect, ElTransfer, ElTreeSelect, ElUpload } from 'element-plus'
+import { ElCascader, ElCheckbox, ElCol, ElColorPicker, ElDatePicker, ElForm, ElFormItem, ElInput, ElInputNumber, ElInputOtp, ElLink, ElMention, ElRadio, ElRate, ElRow, ElSelect, ElSelectV2, ElSlider, ElSwitch, ElTimePicker, ElTimeSelect, ElTransfer, ElTreeSelect, ElUpload } from 'element-plus'
 import { computed, defineComponent, h, nextTick, onMounted, ref, useTemplateRef } from 'vue'
 
 export type CustomRender = (...args: unknown[]) => unknown
@@ -69,6 +69,12 @@ export interface FormOptions<T> {
   'defaultData'?: T
   // Inline form
   'inline'?: boolean
+  // Whether to enable collapse. When true, the form collapses to one row by default and an expand/collapse trigger is rendered inline with the footer.
+  'collapsible'?: boolean
+  // Expand trigger text, shown when the form is collapsed. Default 'Expand'.
+  'expandText'?: string
+  // Collapse trigger text, shown when the form is expanded. Default 'Collapse'.
+  'collapseText'?: string
   // The width occupied by each column
   'colSpan'?: number
   // Form size
@@ -157,6 +163,44 @@ export function setDeepProperty(data: Recordable, propArr: string[], value: unkn
   temp[propArr[propArr.length - 1]] = value
 }
 
+// get schemas that fit in the first grid row (24 columns), reserving one
+// action slot (colSpan) so the trigger column can sit on the same row.
+// at least one schema is always shown. (Ant Pro: showLength = 24/colSpan - 1)
+function getFirstRowSchemas<T>(schemas: FormSchema<T>[], colSpan: number): FormSchema<T>[] {
+  let used = 0
+  const res: FormSchema<T>[] = []
+  for (const schema of schemas) {
+    const span = schema.span ?? colSpan
+    if (res.length > 0 && used + span + colSpan > 24)
+      break
+    res.push(schema)
+    used += span
+  }
+  return res
+}
+
+// span used in the last grid row by the given schemas, accounting for row wrapping
+function getLastRowUsedSpan<T>(schemas: FormSchema<T>[], colSpan: number): number {
+  let running = 0
+  for (const s of schemas) {
+    const span = s.span ?? colSpan
+    if (24 - (running % 24) < span)
+      running += 24 - (running % 24)
+    running += span
+  }
+  return running % 24
+}
+
+// offset to right-align the action col within the grid (Ant Pro calcSubmitterOffset):
+// when the action fits on the current last row, offset fills the gap to the right edge;
+// otherwise the action wraps to a new row and is right-aligned there.
+function getActionOffset(lastRowUsedSpan: number, actionSpan: number): number {
+  const offsetSpan = lastRowUsedSpan + actionSpan
+  if (offsetSpan > 24)
+    return 24 - actionSpan
+  return 24 - offsetSpan
+}
+
 export function useForm(options: undefined): [null, Recordable]
 export function useForm<T extends object>(options: FormOptions<T>): FormReturnType<T>
 export function useForm<T extends object>(options?: FormOptions<T>): FormReturnType<T> | [null, Recordable] {
@@ -164,7 +208,7 @@ export function useForm<T extends object>(options?: FormOptions<T>): FormReturnT
     return [null, {}]
   }
 
-  const { schemas = [], rules = {}, colSpan = 24, defaultData, disabled = false, inline = false, size, rowGutter = 20, labelWidth, labelSuffix = '', labelPosition = 'left', 'validate-on-rule-change': validateOnRuleChange = true, enterCallback, customComponent, 'scrollTo-error': scrollToError = false, 'scroll-into-view-options': scrollIntoViewOptions = true, 'status-icon': statusIcon = false, 'require-asterisk-position': requireAsteriskPosition = 'left', 'show-message': showMessage = true, 'inline-message': inlineMessage = false,
+  const { schemas = [], rules = {}, colSpan = 24, defaultData, disabled = false, inline = false, collapsible = false, expandText = 'Expand', collapseText = 'Collapse', size, rowGutter = 20, labelWidth, labelSuffix = '', labelPosition = 'left', 'validate-on-rule-change': validateOnRuleChange = true, enterCallback, customComponent, 'scrollTo-error': scrollToError = false, 'scroll-into-view-options': scrollIntoViewOptions = true, 'status-icon': statusIcon = false, 'require-asterisk-position': requireAsteriskPosition = 'left', 'show-message': showMessage = true, 'inline-message': inlineMessage = false,
   } = options
 
   type ComponentsKey = DefaultComponentKey | DefaultComponentKey & keyof typeof customComponent
@@ -296,9 +340,20 @@ export function useForm<T extends object>(options?: FormOptions<T>): FormReturnT
       })
     }
 
+    // collapse state. the grid-based collapse only applies to non-inline (grid)
+    // forms — inline items flow freely and have no well-defined "first row",
+    // so in inline mode all items are always shown and no trigger is rendered.
+    const collapsed = ref(Boolean(collapsible))
+    const firstRowSchemas = getFirstRowSchemas(schemas, colSpan)
+    const hasOverflow = schemas.length > firstRowSchemas.length
+    const effectiveSchemas = computed(() => {
+      return !inline && collapsible && collapsed.value ? firstRowSchemas : schemas
+    })
+    const showCollapseTrigger = !inline && collapsible && hasOverflow
+
     // render form items
     const renderFormItems = (slots: Slots) => {
-      return schemas.map((schema) => {
+      return effectiveSchemas.value.map((schema) => {
         if (inline) {
           return renderFormItem(schema, slots)
         }
@@ -307,6 +362,71 @@ export function useForm<T extends object>(options?: FormOptions<T>): FormReturnT
           propItem: schema.prop,
         }, () => renderFormItem(schema, slots))
       })
+    }
+
+    // render collapse trigger (placed inside the action column, right-aligned)
+    function renderCollapseTrigger() {
+      const isCollapsed = collapsed.value
+      const text = isCollapsed ? expandText : collapseText
+      return h(ElLink, {
+        type: 'primary',
+        underline: false,
+        onClick: () => {
+          collapsed.value = !collapsed.value
+        },
+      }, () => [
+        h('span', text),
+        h('span', {
+          class: 'vk-form__collapse-icon',
+          style: {
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '1em',
+            height: '1em',
+            lineHeight: 1,
+            marginLeft: '4px',
+            verticalAlign: 'middle',
+            overflow: 'visible',
+            flexShrink: 0,
+          },
+        }, [h('svg', {
+          viewBox: '0 0 1024 1024',
+          width: '1em',
+          height: '1em',
+          fill: 'currentColor',
+          style: {
+            display: 'block',
+            width: '1em',
+            height: '1em',
+            overflow: 'visible',
+            transform: isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)',
+            transition: 'transform 0.2s',
+          },
+        }, [h('path', { d: 'M858.4 311.7H165.6c-19.4 0-30.4 13.6-30.4 28.8 0 6.4 2.2 12.8 6.7 18.9l346.4 424.3c8.8 10.8 22.9 16.3 35.7 16.3 12.8 0 26.4-5.5 35.2-16.3l346.4-424.3c4.5-6.1 6.7-12.5 6.7-18.9 0-15.1-11-28.8-30.4-28.8z' })])]),
+      ])
+    }
+
+    // render the action column (footer + trigger) as the last ElCol.
+    // Ant Pro style: the action occupies one field slot (colSpan) and is
+    // right-aligned via `offset`; it wraps to a new row when the last field
+    // row cannot fit it (e.g. colSpan 24 / a single full-width field).
+    function renderActionCol(slots: Slots) {
+      const actionSpan = colSpan
+      const lastRowUsedSpan = getLastRowUsedSpan(effectiveSchemas.value, colSpan)
+      const offset = getActionOffset(lastRowUsedSpan, actionSpan)
+      const footer = slots?.footer?.() ?? []
+      const content = [...footer, renderCollapseTrigger()]
+      return h(ElCol, { span: actionSpan, offset }, () => h('div', {
+        class: 'vk-form__action',
+        style: {
+          display: 'flex',
+          justifyContent: 'flex-end',
+          alignItems: 'center',
+          gap: '12px',
+          flexWrap: 'wrap',
+        },
+      }, content))
     }
 
     onMounted(async () => {
@@ -345,14 +465,24 @@ export function useForm<T extends object>(options?: FormOptions<T>): FormReturnT
         const children: unknown[] = []
         if (inline) {
           children.push(renderFormItems(slots))
+          if (slots?.footer)
+            children.push(slots.footer())
+        }
+        else if (showCollapseTrigger) {
+          children.push(h(ElRow, {
+            gutter: rowGutter,
+            align: 'middle',
+          }, () => [
+            ...renderFormItems(slots),
+            renderActionCol(slots),
+          ]))
         }
         else {
           children.push(h(ElRow, {
             gutter: rowGutter,
           }, () => renderFormItems(slots)))
-        }
-        if (slots?.footer) {
-          children.push(slots.footer())
+          if (slots?.footer)
+            children.push(slots.footer())
         }
         return children
       })

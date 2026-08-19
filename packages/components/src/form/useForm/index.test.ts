@@ -50,11 +50,22 @@ vi.mock('element-plus', () => ({
       })
     },
   }),
+  ElLink: defineComponent({
+    props: ['type', 'underline'],
+    emits: ['click'],
+    setup(_props, { slots, emit }) {
+      return () => h('a', {
+        class: 'el-link',
+        onClick: (e: Event) => emit('click', e),
+      }, slots.default?.())
+    },
+  }),
   ElCol: defineComponent({
-    props: ['span'],
+    props: ['span', 'offset'],
     setup(props, { slots }) {
       return () => h('div', {
         'data-span': props.span || '',
+        'data-offset': props.offset ?? '',
       }, slots.default?.())
     },
   }),
@@ -835,5 +846,193 @@ describe('useForm', () => {
     api.setData({ name: '', age: 0, email: '', address: { city: 'Beijing', street: '' } })
     await nextTick()
     expect(api.getData().address.city).toBe('Beijing')
+  })
+
+  it('does not render collapse trigger by default', () => {
+    const [FormComp] = useForm<UserForm>({
+      schemas: [
+        { label: 'Name', prop: 'name', type: 'input' },
+        { label: 'Age', prop: 'age', type: 'input-number' },
+        { label: 'Email', prop: 'email', type: 'input' },
+      ],
+      colSpan: 12,
+    })
+    const wrapper = mount(FormComp)
+    expect(wrapper.find('.el-link').exists()).toBe(false)
+    expect(wrapper.findAll('[data-prop]').length).toBe(3)
+  })
+
+  it('collapses to one row when collapsible is true', () => {
+    const [FormComp] = useForm<UserForm>({
+      schemas: [
+        { label: 'Name', prop: 'name', type: 'input' },
+        { label: 'Age', prop: 'age', type: 'input-number' },
+        { label: 'Email', prop: 'email', type: 'input' },
+        { label: 'Custom', prop: 'custom', type: 'input' },
+      ],
+      colSpan: 12,
+      collapsible: true,
+    })
+    const wrapper = mount(FormComp)
+    expect(wrapper.findAll('[data-prop]').length).toBe(1)
+    expect(wrapper.find('.el-link').text()).toBe('Expand')
+  })
+
+  it('expands all items and toggles text on trigger click', async () => {
+    const [FormComp] = useForm<UserForm>({
+      schemas: [
+        { label: 'Name', prop: 'name', type: 'input' },
+        { label: 'Age', prop: 'age', type: 'input-number' },
+        { label: 'Email', prop: 'email', type: 'input' },
+        { label: 'Custom', prop: 'custom', type: 'input' },
+      ],
+      colSpan: 12,
+      collapsible: true,
+    })
+    const wrapper = mount(FormComp)
+    expect(wrapper.findAll('[data-prop]').length).toBe(1)
+    await wrapper.find('.el-link').trigger('click')
+    await nextTick()
+    expect(wrapper.findAll('[data-prop]').length).toBe(4)
+    expect(wrapper.find('.el-link').text()).toBe('Collapse')
+    await wrapper.find('.el-link').trigger('click')
+    await nextTick()
+    expect(wrapper.findAll('[data-prop]').length).toBe(1)
+    expect(wrapper.find('.el-link').text()).toBe('Expand')
+  })
+
+  it('supports custom expand/collapse text', () => {
+    const [FormComp] = useForm<UserForm>({
+      schemas: [
+        { label: 'Name', prop: 'name', type: 'input' },
+        { label: 'Age', prop: 'age', type: 'input-number' },
+        { label: 'Email', prop: 'email', type: 'input' },
+        { label: 'Custom', prop: 'custom', type: 'input' },
+      ],
+      colSpan: 12,
+      collapsible: true,
+      expandText: 'More',
+      collapseText: 'Less',
+    })
+    const wrapper = mount(FormComp)
+    expect(wrapper.find('.el-link').text()).toBe('More')
+  })
+
+  it('does not show trigger when all schemas fit in one row', () => {
+    const [FormComp] = useForm<UserForm>({
+      schemas: [
+        { label: 'Name', prop: 'name', type: 'input' },
+        { label: 'Age', prop: 'age', type: 'input-number' },
+      ],
+      colSpan: 8,
+      collapsible: true,
+    })
+    const wrapper = mount(FormComp)
+    expect(wrapper.find('.el-link').exists()).toBe(false)
+    expect(wrapper.findAll('[data-prop]').length).toBe(2)
+  })
+
+  it('renders trigger and footer in action column (Ant Pro style)', () => {
+    const [FormComp] = useForm<UserForm>({
+      schemas: [
+        { label: 'Name', prop: 'name', type: 'input' },
+        { label: 'Age', prop: 'age', type: 'input-number' },
+        { label: 'Email', prop: 'email', type: 'input' },
+        { label: 'Custom', prop: 'custom', type: 'input' },
+      ],
+      colSpan: 12,
+      collapsible: true,
+    })
+    const wrapper = mount(FormComp, {
+      slots: {
+        footer: () => h('div', { class: 'footer' }, 'Footer'),
+      },
+    })
+    const action = wrapper.find('[data-gutter] .vk-form__action')
+    expect(action.exists()).toBe(true)
+    expect(action.find('.footer').exists()).toBe(true)
+    expect(action.find('.el-link').exists()).toBe(true)
+    const actionCol = wrapper.findAll('[data-span]').at(-1)
+    expect(actionCol?.attributes('data-span')).toBe('12')
+    expect(actionCol?.attributes('data-offset')).toBe('0')
+  })
+
+  it('reserves one field slot for the action col (Ant Pro style)', () => {
+    const [FormComp] = useForm<UserForm>({
+      schemas: [
+        { label: 'Name', prop: 'name', type: 'input' },
+        { label: 'Age', prop: 'age', type: 'input-number' },
+        { label: 'Email', prop: 'email', type: 'input' },
+      ],
+      colSpan: 8,
+      collapsible: true,
+    })
+    const wrapper = mount(FormComp)
+    // collapsed: first row holds 2 fields (span 8 each = 16) plus the action
+    // col (span 8, offset 0) filling the reserved 3rd slot = 24, no wrap.
+    const cols = wrapper.findAll('[data-span]')
+    expect(cols.length).toBe(3)
+    expect(cols.at(-1)?.attributes('data-span')).toBe('8')
+    expect(cols.at(-1)?.attributes('data-offset')).toBe('0')
+    expect(wrapper.findAll('[data-prop]').length).toBe(2)
+  })
+
+  it('wraps action col to a new line when a field fills the whole row', () => {
+    const [FormComp] = useForm<UserForm>({
+      schemas: [
+        { label: 'Name', prop: 'name', type: 'input' },
+        { label: 'Age', prop: 'age', type: 'input-number' },
+      ],
+      colSpan: 24,
+      collapsible: true,
+    })
+    const wrapper = mount(FormComp)
+    // collapsed: the first field spans the whole row (24), so the action col
+    // (also span 24) must wrap to a new line.
+    const cols = wrapper.findAll('[data-span]')
+    expect(cols.length).toBe(2)
+    expect(cols.at(0)?.attributes('data-span')).toBe('24')
+    expect(cols.at(-1)?.attributes('data-span')).toBe('24')
+    expect(wrapper.find('[data-gutter] .vk-form__action').exists()).toBe(true)
+  })
+
+  it('right-aligns action col on a new row when expanded', async () => {
+    const [FormComp] = useForm<UserForm>({
+      schemas: [
+        { label: 'Name', prop: 'name', type: 'input' },
+        { label: 'Age', prop: 'age', type: 'input-number' },
+        { label: 'Email', prop: 'email', type: 'input' },
+        { label: 'Custom', prop: 'custom', type: 'input' },
+      ],
+      colSpan: 12,
+      collapsible: true,
+    })
+    const wrapper = mount(FormComp)
+    // collapsed: 1 field (span 12) + action (span 12, offset 0) share row 1
+    expect(wrapper.findAll('[data-span]').at(-1)?.attributes('data-offset')).toBe('0')
+    await wrapper.find('.el-link').trigger('click')
+    await nextTick()
+    // expanded: 4 fields fill rows 1-2; the action (span 12) wraps to row 3
+    // and is right-aligned there via offset 12
+    expect(wrapper.findAll('[data-span]').at(-1)?.attributes('data-span')).toBe('12')
+    expect(wrapper.findAll('[data-span]').at(-1)?.attributes('data-offset')).toBe('12')
+  })
+
+  it('shows all items without trigger in inline mode even when collapsible', () => {
+    const [FormComp] = useForm<UserForm>({
+      schemas: [
+        { label: 'Name', prop: 'name', type: 'input' },
+        { label: 'Age', prop: 'age', type: 'input-number' },
+        { label: 'Email', prop: 'email', type: 'input' },
+        { label: 'Custom', prop: 'custom', type: 'input' },
+      ],
+      colSpan: 12,
+      inline: true,
+      collapsible: true,
+    })
+    const wrapper = mount(FormComp)
+    // inline forms flow freely — grid collapse does not apply, all items show
+    expect(wrapper.findAll('[data-prop]').length).toBe(4)
+    expect(wrapper.find('.el-link').exists()).toBe(false)
   })
 })
