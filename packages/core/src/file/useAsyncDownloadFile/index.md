@@ -119,4 +119,4 @@ interface AsyncDownloadFileReturn {
 }
 ```
 
-> `RequestService` is re-exported from `useRequest`, see [useRequest](../network/useRequest/) for its declaration.
+> `RequestService` is re-exported from `useRequest`, see [useRequest](../../network/useRequest/) for its declaration.
