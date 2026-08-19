@@ -1,7 +1,7 @@
 {
   "name": "@vuecraft/components",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "packageManager": "pnpm@10.20.0",
   "description": "Collection of business development components for Vue3 projects",
   "author": "Kalu5",
