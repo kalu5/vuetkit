@@ -1,7 +1,7 @@
 {
   "name": "@vuecraft/skill",
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "packageManager": "pnpm@10.20.0",
   "description": "AI Agent Skills for VueCraft — Vue3 business development tools",
   "author": "Kalu5",
