@@ -1437,6 +1437,94 @@ describe('useTable', () => {
     expect(buttons[1].text()).toBe('Search')
   })
 
+  it('renders custom button text when searchButtons is provided', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      searchButtons: {
+        resetText: 'Clear',
+        searchText: 'Query',
+      },
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const buttons = wrapper.findAll('button')
+    expect(buttons.length).toBe(2)
+    expect(buttons[0].text()).toBe('Clear')
+    expect(buttons[1].text()).toBe('Query')
+  })
+
+  it('falls back to default Reset text when only searchText is customized', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      searchButtons: {
+        searchText: 'Query',
+      },
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const buttons = wrapper.findAll('button')
+    expect(buttons[0].text()).toBe('Reset')
+    expect(buttons[1].text()).toBe('Query')
+  })
+
+  it('falls back to default Search text when only resetText is customized', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      searchButtons: {
+        resetText: 'Clear',
+      },
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const buttons = wrapper.findAll('button')
+    expect(buttons[0].text()).toBe('Clear')
+    expect(buttons[1].text()).toBe('Search')
+  })
+
+  it('falls back to default button text when searchButtons is an empty object', async () => {
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: vi.fn(),
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      searchFormConfig: { schemas: [] },
+      searchButtons: {},
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const buttons = wrapper.findAll('button')
+    expect(buttons[0].text()).toBe('Reset')
+    expect(buttons[1].text()).toBe('Search')
+  })
+
   it('applies searchFormConfig size to buttons', async () => {
     vi.mocked(useRequest).mockReturnValue({
       data: ref([]),
@@ -1618,6 +1706,41 @@ describe('useTable', () => {
     await resetBtn.trigger('click')
     expect(mockReset).toHaveBeenCalledTimes(1)
     expect(mockExecute).not.toHaveBeenCalled()
+  })
+
+  it('triggers handlers when custom searchButtons text buttons are clicked', async () => {
+    const mockService = vi.fn(() => Promise.resolve([]))
+    const mockReset = vi.fn()
+    const mockGetData = vi.fn(() => ({ keyword: 'search' }))
+    const mockExecute = vi.fn()
+    vi.mocked(useForm).mockReturnValue([mockFormComp, { ...mockFormMethods, reset: mockReset, getData: mockGetData }])
+    vi.mocked(useRequest).mockReturnValue({
+      data: ref([]),
+      loading: ref(false),
+      error: ref(undefined),
+      execute: mockExecute,
+      cancel: vi.fn(),
+    })
+    const [TableComp] = useTable<User>({
+      columns: [],
+      service: mockService,
+      searchFormConfig: { schemas: [] },
+      searchButtons: {
+        resetText: 'Clear',
+        searchText: 'Query',
+      },
+      params: {},
+    })
+    const wrapper = await mount(TableComp)
+    const buttons = wrapper.findAll('button')
+    const searchBtn = buttons.find(b => b.text() === 'Query')!
+    const executeCallCountBefore = mockExecute.mock.calls.length
+    await searchBtn.trigger('click')
+    expect(mockExecute.mock.calls.length).toBe(executeCallCountBefore + 1)
+
+    const resetBtn = buttons.find(b => b.text() === 'Clear')!
+    await resetBtn.trigger('click')
+    expect(mockReset).toHaveBeenCalledTimes(1)
   })
 
   // ============ searchFormConfig with pagination ============

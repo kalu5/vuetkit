@@ -30,6 +30,13 @@ export interface PaginationOptions extends Partial<PaginationProps> {
   wrapStyle?: CSSProperties
 }
 
+export interface SearchButtonsOptions {
+  // Reset button text
+  resetText?: string
+  // Search button text
+  searchText?: string
+}
+
 export interface TableOptions<T extends DefaultRow> extends TableProps<T> {
   // Columns
   columns: TableColumnOptions<T>[]
@@ -49,6 +56,8 @@ export interface TableOptions<T extends DefaultRow> extends TableProps<T> {
   tableWrapStyle?: CSSProperties
   // Search Form Config
   searchFormConfig?: FormOptions<T>
+  // Search Buttons Config
+  searchButtons?: SearchButtonsOptions
 }
 
 export type TableReturn = [
@@ -57,7 +66,7 @@ export type TableReturn = [
 ]
 
 export function useTable<T extends DefaultRow>(options: TableOptions<T>): TableReturn {
-  const { columns = [], service, params, formatData, align, headerAlign, paginationConfig, searchFormConfig, tableWrapStyle = {}, data = [] as T[], ...rest } = options
+  const { columns = [], service, params, formatData, align, headerAlign, paginationConfig, searchFormConfig, searchButtons, tableWrapStyle = {}, data = [] as T[], ...rest } = options
 
   if ((paginationConfig || searchFormConfig) && !realObj(toValue(params))) {
     throw new Error('params must be an object when paginationConfig or searchFormConfig is provided')
@@ -229,12 +238,12 @@ export function useTable<T extends DefaultRow>(options: TableOptions<T>): TableR
               type: 'default',
               size: searchFormConfig?.size || 'small',
               onClick: handleReset,
-            }, () => 'Reset'),
+            }, () => searchButtons?.resetText || 'Reset'),
             h(ElButton, {
               type: 'primary',
               size: searchFormConfig?.size || 'small',
               onClick: handleSearch,
-            }, () => 'Search'),
+            }, () => searchButtons?.searchText || 'Search'),
           ])
         },
       })

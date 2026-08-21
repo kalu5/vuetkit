@@ -438,6 +438,107 @@ const [TableComp] = useTable<User>({
 </template>
 ```
 
+## Search Buttons Text
+
+- Configure the search form button text via `searchButtons`.
+
+```vue
+<script setup lang="ts">
+import { useTable } from '@vuecraft/components'
+import { reactive } from 'vue'
+
+interface User {
+  name: string
+  age: number
+  gender: string
+}
+
+interface RequestData extends User {
+  page: number
+  pageSize: number
+}
+
+function getUserList(requestParams: RequestData) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        data: [
+          {
+            name: 'Tom',
+            age: 18,
+            gender: 'male',
+          },
+          {
+            name: 'Lily',
+            age: 20,
+            gender: 'female',
+          },
+          {
+            name: `${requestParams.name}:${requestParams.page}`,
+            age: 22,
+            gender: 'male',
+          },
+        ],
+        total: 100,
+      })
+    }, 1000)
+  })
+}
+
+const params = reactive({
+  name: 'Tom',
+  page: 1,
+  pageSize: 10,
+})
+
+const [TableComp] = useTable<User>({
+  service: getUserList,
+  params,
+  paginationConfig: true,
+  align: 'center',
+  headerAlign: 'center',
+  searchFormConfig: {
+    schemas: [
+      {
+        label: 'Name',
+        prop: 'name',
+        component: 'el-input',
+      },
+      {
+        label: 'Age',
+        prop: 'age',
+        component: 'el-input-number',
+      },
+    ],
+  },
+  searchButtons: {
+    resetText: 'Clear',
+    searchText: 'Query',
+  },
+  columns: [
+    {
+      label: 'Name',
+      prop: 'name',
+    },
+    {
+      label: 'Age',
+      prop: 'age',
+    },
+    {
+      label: 'Gender',
+      prop: 'gender',
+    },
+  ],
+  data: [
+  ],
+})
+</script>
+
+<template>
+  <TableComp />
+</template>
+```
+
 ## Multi-Level Table Header
 
 ```vue
@@ -521,6 +622,13 @@ interface PaginationOptions extends PaginationProps {
   wrapStyle: CSSProperties
 }
 
+interface SearchButtonsOptions {
+  // Reset button text
+  resetText?: string
+  // Search button text
+  searchText?: string
+}
+
 interface TableOptions<T extends DefaultRow> extends TableProps<T> {
   // Columns
   columns: TableColumnOptions<T>[]
@@ -540,6 +648,8 @@ interface TableOptions<T extends DefaultRow> extends TableProps<T> {
   tableWrapStyle?: CSSProperties
   // Search Form Config
   searchFormConfig?: FormOptions<T>
+  // Search Buttons Config
+  searchButtons?: SearchButtonsOptions
 }
 
 type TableReturn = [
